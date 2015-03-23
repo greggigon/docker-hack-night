@@ -7,7 +7,7 @@
 - Vagrant - the latest version https://www.vagrantup.com/downloads.html
 - ~15 GB Free disk space
 - ~2 GB Free memory
-- [Vagrantfile]
+- [Vagrantfile](Vagrantfile)
 
 Run `vagrant up` prior to attending, a VM will be downloaded and started which will be used for the following exercises.  `vagrant halt` will stop the VM.  
 
