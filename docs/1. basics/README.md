@@ -8,7 +8,7 @@ We are going to learn the following stuff:
 * How to run an image and look inside?
 * How to stop container, remove container? How to remove image?
 * How to commit a container so it becomes an image?
-* We will put a basic application inside a container (Python hello world).
+
 
 To see details about Docker installation type:
 
