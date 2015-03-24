@@ -15,12 +15,12 @@ Login and Password details: **vagrant/vagrant**.
 
 ## Exercises
 
-1. [Basics](docs/basics/README.md)
-1. [Networking](docs/networking/README.md)
-1. [Linking](docs/linking/README.md)
-1. [Volumes](docs/volumes/README.md)
-1. [Building](docs/building/README.md)
-1. [Clustering](docs/clustering/README.md)
+1. [Basics](docs/1. basics/README.md)
+1. [Networking](docs/2. networking/README.md)
+1. [Linking](docs/3. linking/README.md)
+1. [Volumes](docs/4. volumes/README.md)
+1. [Building](docs/5. building/README.md)
+1. [Clustering](docs/6. clustering/README.md)
 
 ## References
 
