@@ -17,4 +17,5 @@ docker run \
 		  --publish=8085:8080 \
 		  --detach=true \
 		  --name=cadvisor \
+		  --restart=always \
 		  google/cadvisor:latest
