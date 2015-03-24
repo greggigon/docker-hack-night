@@ -9,6 +9,7 @@ We are going to learn the following stuff:
 * How to stop container, remove container? How to remove image?
 * How to commit a container so it becomes an image?
 
+### Very basic stuff
 
 To see details about Docker installation type:
 
@@ -24,11 +25,11 @@ To get help on any docker commands run:
 
 	docker *command* -h
 
---------
+### Getting images
 
 To search for containers in the Docker registry use:
 
-	docker search *<name-of-container>*
+	docker search <name-of-container>
 
 --------
 
@@ -55,15 +56,46 @@ To see what Images are downloaded use:
 To remove images:
 	
 
-	docker rmi *<image-name>*
+	docker rmi <image-name>
 
 
---------
+### Running/Stopping container
 
 To start a container in interactive mode use:
 
 	docker run -i -t busybox
 
+To see what containers are running use:
+
+	docker ps [-a] - where -a lists all containers, running and stopped
+
+--------
+To run container detached from terminal:
+
+	docker run -d --name my-name busybox
+
+To stop container:
+
+	docker stop my-name [container-id] - you can use container ID or a generated name. 
+
+You can find that bu listing containers with *docker ps*.
+
+--------
+
+To remove a container use:
+
+	docker rm <name or id>
+
+Container will not be removed if it is still running. Docker will tell you about that.
+
+### Persisting containers
+
+To commit container use:
+
+	docker commit <name or id> [REPOSITORY:TAG]
+	docker commit my-name greg/container:latest
+
+You can also TAG a container if you need to (useful with multiple versions).
 
 
 
