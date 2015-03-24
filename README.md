@@ -11,6 +11,8 @@
 
 Run `vagrant up` prior to attending, a VM will be downloaded and started which will be used for the following exercises.  `vagrant halt` will stop the VM.  
 
+Login and Password details: **vagrant/vagrant**.
+
 ## Exercises
 
 1. [Basics](docs/basics/README.md)

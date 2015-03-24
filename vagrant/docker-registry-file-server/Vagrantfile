@@ -1,0 +1,21 @@
+VAGRANTFILE_API_VERSION ||= "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.box = "trusty64"
+	config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+	config.vm.box_download_insecure = true
+	config.vm.network "public_network"
+
+	config.vm.provider "virtualbox" do |vb|
+		vb.name = "registry-and-fileserver"
+		vb.gui = true
+		vb.memory = 1024
+		vb.cpus = 2
+	end
+
+	config.vm.provision "file", source: "file-server", destination: "/home/vagrant/bin/file-server"
+	config.vm.provision "file", source: "registry", destination: "/home/vagrant/bin/registry"
+	config.vm.provision "file", source: "nginx.conf", destination: "/home/vagrant/conf/default.conf"
+
+	config.vm.provision :shell, path: "prepare.sh"
+end
