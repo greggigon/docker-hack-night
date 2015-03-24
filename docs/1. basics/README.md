@@ -23,7 +23,7 @@ Docker uses Git for versioning of Container layers and Go as a runtime and progr
 
 To get help on any docker commands run:
 
-	docker *command* -h
+	docker <command> -h
 
 ### Getting images
 
@@ -43,9 +43,10 @@ If you are about to use unoficial and non-public Docker repository, you'll need 
 	docker pull hostname:port/repository/container:version
 
 
-''' Let's pull BusyBox as a base container and use that one for some testing'''
+> Let's pull BusyBox as a base container and use that one for some testing
 
-	docker pull busybox
+
+	docker pull @:busybox
 
 
 To see what Images are downloaded use:
