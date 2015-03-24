@@ -1,0 +1,19 @@
+VAGRANTFILE_API_VERSION ||= "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.box = "Mint"
+	config.vm.box_download_insecure = true
+	config.vm.network "public_network"
+
+	config.vm.provider "virtualbox" do |vb|
+		vb.name = "LinuxMint Basebox"
+		vb.gui = true
+		vb.memory = 2048
+		vb.cpus = 2
+		vb.customize ["modifyvm", :id, "--vram", "64"]
+	end
+
+	config.vm.provision "file", source: "clean_base_box.sh", destination: "/tmp/clean_base_box.sh"
+	config.vm.provision :shell, inline: "chmod +x /tmp/clean_base_box.sh && sudo /tmp/clean_base_box.sh"
+
+end
