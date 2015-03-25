@@ -3,6 +3,8 @@ Clustering Containers
 
 Containers provide a lightweight way to package and run applications but how do we manage them?
 
+NOTE: Kubernetes and OpenShift v3 are both currently **beta!**
+
 # Kubernetes
 
 Google has open-sourced their internal container management system which they use to deploy, monitor and scale their applications.  It is designed to be:
@@ -36,9 +38,11 @@ a1abced25cba        openshift/origin:v0.4.1   "/usr/bin/openshift    22 minutes 
 
 The main command for interacting with openshift is `osc`
 
-```$ osc get minions
+```
+$ osc get minions
 NAME                LABELS              STATUS
-master              <none>              Ready```
+master              <none>              Ready
+```
 
 OpenShift logs are available by running:
 `$ sudo journalctl -f -u openshift-master`
