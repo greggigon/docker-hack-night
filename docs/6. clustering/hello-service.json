@@ -1,0 +1,9 @@
+{
+  "id": "hello-openshift",
+  "kind": "Service",
+  "apiVersion": "v1beta1",
+  "port": 27017,
+  "selector": {
+    "name": "hello-openshift"
+  }
+}

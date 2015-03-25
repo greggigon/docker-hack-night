@@ -1,0 +1,25 @@
+{
+  "id": "hello-openshift",
+  "kind": "ReplicationController",
+  "apiVersion": "v1beta1",
+  "desiredState": {
+    "replicas": 1,
+    "replicaSelector": {"name": "hello-openshift"},
+    "podTemplate": {
+      "desiredState": {
+         "manifest": {
+           "version": "v1beta1",
+           "id": "hello-openshift",
+           "containers": [{
+             "name": "hello-openshift",
+             "image": "openshift/hello-openshift",
+             "ports": [{"containerPort": 8080}]
+           }]
+         }
+       },
+       "labels": {
+         "name": "hello-openshift"
+       }
+      }},
+  "labels": {"name": "hello-openshift"}
+}
