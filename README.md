@@ -5,13 +5,22 @@
 
 - VirtualBox - the latest version https://www.virtualbox.org/wiki/Downloads
 - Vagrant - the latest version https://www.vagrantup.com/downloads.html
+-- The installer should add `vagrant` to your path, see http://docs.vagrantup.com/v2/installation/ if you're having trouble.
 - ~15 GB Free disk space
 - ~2 GB Free memory
-- [Vagrantfile](Vagrantfile)
 
-Run `vagrant up` prior to attending, a VM will be downloaded and started which will be used for the following exercises.  `vagrant halt` will stop the VM.  
+Once you've installed VirtualBox and Vagrant do the following:
+1. Create a directory:
+`mkdir hacknight`
+1. Download [Vagrantfile] to it
+1. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile]
+1. Virtualbox will start a Fedora 21 VM with everything installed and configured, you should be able to login using the username *vagrant* and password *vagrant*
+1. Firefox, a terminal and the Sublime Text text editor are available from the activities menu in the top left.
+1. Vagrant will automatically map the current directory on the host to /vagrant in the guest
+1. If you prefer, you can ssh to the guest from the host using `vagrant ssh` or as follows: `ssh -p 2222 vagrant@localhost`.  The private key is [here](https://github.com/mitchellh/vagrant/tree/master/keys)
+1. `vagrant halt` will shut the VM down
 
-Login and Password details: **vagrant/vagrant**.
+You're now ready to follow the exercises below.
 
 ## Exercises
 
