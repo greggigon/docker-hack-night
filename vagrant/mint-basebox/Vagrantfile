@@ -18,4 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "file", source: "clean_base_box.sh", destination: "/tmp/clean_base_box.sh"
 	config.vm.provision :shell, inline: "chmod +x /tmp/clean_base_box.sh && sudo /tmp/clean_base_box.sh"
 
+	# Run always provisioner
+
 end
