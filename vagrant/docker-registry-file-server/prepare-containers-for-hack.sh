@@ -4,6 +4,10 @@ IP=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
 
 echo "Pull the base containers that people would be using ..."
 
+sudo service docker stop
+sudo sh -c 'echo "--insecure-registry ${IP}:5000" > /etc/default/docker'
+sudo service docker start
+
 echo "-> Getting Busybox base container ..."
 docker pull busybox:latest
 docker tag busybox:latest $IP:5000/hack/busybox:latest
