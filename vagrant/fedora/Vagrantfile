@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION="2"
+
+Vagrant.require_version ">= 1.6.2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  insert_key = false # don't replace insecure key
+  num_minions = 0 
+  cpus = 2
+  memory = 1024
+  gui = true
+  box_name = "fedora-21-workstation-v1"
+  box_url = ""
+  openshift_version = "v0.4.1"
+
+  # configure shell, yum, docker etc to use proxy if running internally
+  #if Vagrant.has_plugin?("vagrant-proxyconf")
+  #  config.proxy.http = ""
+  #  config.proxy.https = ""
+  #  config.proxy.no_proxy = "localhost,127.0.0.1,/var/run/docker.sock"
+  #end
+
+  # general config
+  config.vm.box = box_name
+  # config.vm.box_url = ''
+  config.ssh.insert_key = insert_key
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = memory
+    vb.cpus = cpus
+    vb.gui = gui
+    vb.customize [
+      "modifyvm", :id,
+      "--groups", "/Hack Night"
+    ]
+  end
+
+  # IP configuration
+  master_ip = "10.245.2.2"
+  minion_ip_base = "10.245.2."
+  minion_ips = num_minions.times.collect { |n| minion_ip_base + "#{n+3}" }
+  minion_ips_str = minion_ips.join(",")
+
+  config.vm.provision :shell, path: "bootstrap.sh", args: [openshift_version]
+
+  config.vm.define "master" do |master| 
+    master.vm.network "private_network", ip: "#{master_ip}"
+    master.vm.hostname = "master"
+    master.vm.network "forwarded_port", guest: 80, host: 1080
+    master.vm.network "forwarded_port", guest: 8080, host: 8080
+    master.vm.network "forwarded_port", guest: 8443, host: 8443
+    master.vm.network "forwarded_port", guest: 8444, host: 8444
+    master.vm.network "forwarded_port", guest: 9080, host: 9080
+
+    config.vm.provision :shell, path: "master.sh", args: [master_ip, minion_ips_str]
+  end
+
+  if num_minions > 0
+    
+    num_minions.times do |n|
+      config.vm.define "minion-#{n+1}" do |minion|
+        minion_ip = minion_ips[n]
+        minion.vm.network "private_network", ip: "#{minion_ip}"
+        minion.vm.hostname = "minion-#{n+1}"
+        minion.vm.provision :shell, path: "minion.sh", args: [master_ip]
+      end
+    end
+  end
+
+end
