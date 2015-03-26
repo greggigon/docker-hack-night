@@ -3,7 +3,7 @@ Container Linking
 
 If you haven't already pull the latest wordpress and mysql images.
 
-`$ sudo docker pull wordpress:latest mysql:latest`
+`$ docker pull wordpress:latest mysql:latest`
 
 In the previous section you ran MySQL like this, if the mysqldb container isn't running start it again:
 
@@ -31,7 +31,7 @@ Hit http://localhost:8000 to see your Wordpress container.
 Docker injects environment variables into the container that is being linked.
 
 ```
-$ sudo docker exec -it web env
+$ docker exec -it web env
 ...
 HOSTNAME=126f3354b725
 MYSQL_PORT=tcp://172.17.0.2:3306
@@ -58,9 +58,11 @@ Notice that the container being linked also inherits any environment variables (
 
 Docker also adds an entry to /etc/hosts for each linked container which can be used to connect to the container.  /etc/hosts is updated if the source container restarts.
 
-```$ sudo docker exec -it web cat /etc/hosts
+```
+$ docker exec -it web cat /etc/hosts
 172.17.0.3	126f3354b725
-172.17.0.2	mysql```
+172.17.0.2	mysql
+```
 
 ---
 

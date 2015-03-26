@@ -32,7 +32,7 @@ Concepts:
 We're using it here as it's nicely packaged into a single container.  OpenShift should already be running (in a container!) in your VM, for example:
 
 ```
-$ sudo docker ps
+$ docker ps
 CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                    NAMES          
 a1abced25cba        openshift/origin:v0.4.1   "/usr/bin/openshift    22 minutes ago      Up 22 minutes                                openshift-master.service
 ```
@@ -83,7 +83,7 @@ Hello OpenShift!
 
 Use docker commands to see the container running on the local host:
 ```
-$ sudo docker ps
+$ docker ps
 CONTAINER ID        IMAGE                              COMMAND                CREATED             STATUS              PORTS                    NAMES
 e878a999274c        openshift/hello-openshift:latest   "/hello-openshift"     2 minutes ago       Up 2 minutes                                 k8s_hello-openshift.34edfc84_hello-openshift.default.api_61f07084-d24a-11e4-be9b-080027f89fba_36ea7203
 ```
@@ -159,7 +159,7 @@ hello-openshift         172.17.0.3          hello-openshift     openshift/hello-
 And the containers on the host:
 
 ```
-$ sudo docker ps
+$ docker ps
 CONTAINER ID        IMAGE                              COMMAND                CREATED             STATUS              PORTS                    NAMES
 cf8091f8693b        openshift/hello-openshift:latest   "/hello-openshift"     3 minutes ago       Up 3 minutes                                 k8s_hello-openshift.346dfbe7_hello-openshift-1t5q3.default.api_267aac3f-d24d-11e4-be9b-080027f89fba_0272caf7   
 feb5e2c8952c        openshift/origin-pod:v0.4.1        "/pod"                 3 minutes ago       Up 3 minutes                                 k8s_POD.7d6e9ca_hello-openshift-1t5q3.default.api_267aac3f-d24d-11e4-be9b-080027f89fba_f21e5a33                
@@ -172,12 +172,12 @@ c720dbe6d3bc        openshift/hello-openshift:latest   "/hello-openshift"     6 
 > *NOTE*: Above we first created a standalone Pod without a Replication Contoller, it would be better to create a Replication Contoller with a replica of 1.
 
 Now, try stopping one of the containers using the container ID from the command above:
-`$ sudo docker stop cf8091f8693b`
+`$ docker stop cf8091f8693b`
 
 Wait a few seconds and check again:
 
 ```
-$ sudo docker ps
+$ docker ps
 CONTAINER ID        IMAGE                              COMMAND                CREATED             STATUS                  PORTS                    NAMES
 880bf49b5d86        openshift/hello-openshift:latest   "/hello-openshift"     2 seconds ago       Up Less than a second                            k8s_hello-openshift.34edfc84_hello-openshift.default.api_61f07084-d24a-11e4-be9b-080027f89fba_6020ced9
 ```
@@ -189,7 +189,7 @@ The Replication Controller has detected the failure and has restarted the pod!
 Kill 1 or 2 of the containers, the service will redirect to the remaining pods
 
 ```
-$ sudo docker kill 880bf49b5d86
+$ docker kill 880bf49b5d86
 880bf49b5d86
 ```
 

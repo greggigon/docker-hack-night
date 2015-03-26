@@ -43,7 +43,7 @@ If you are about to use unofficial and non-public Docker repository, you'll need
 	$ docker pull hostname:port/repository/container:version
 
 
-> Let's pull BusyBox as a base container and use that one for some testing
+Let's pull BusyBox as a base container and use that one for some testing
 
 
 	$ docker pull @:busybox
@@ -103,10 +103,19 @@ To commit container use:
 You can also TAG a container if you need to (useful with multiple versions).
 
 
-## Creating our own container
+## Running your first container
 
 We are going to use **Ubuntu** base image as our base container.
 Pull the Ubuntu image from the registry first. *(If you don't remember how to do it, look up :) )*
+
+```
+$ docker run ubuntu:14.10 /bin/echo "Hello World"
+Hello World
+```
+
+What just happened?  The Docker client told the Docker daemon to create a container using the ubuntu:14.10 image and to run the command /bin/echo with the arguments "Hello World" within that container.
+
+## Creating our own container
 
 Now we are going to put some useful stuff in that container:
 
