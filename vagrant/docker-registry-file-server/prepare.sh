@@ -40,6 +40,7 @@ docker run \
 		  google/cadvisor:latest
 
 source /home/vagrant/bin/registry
+source /home/vagrant/bin/file-server
 
 echo "Done ..."
 

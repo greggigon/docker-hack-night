@@ -38,7 +38,7 @@ To get a container from Docker registry use:
 	docker pull container-name
 
 
-If you are about to use unoficial and non-public Docker repository, you'll need to specify the container name in the for of:
+If you are about to use unofficial and non-public Docker repository, you'll need to specify the container name in the form of:
 
 	docker pull hostname:port/repository/container:version
 
@@ -99,4 +99,44 @@ To commit container use:
 You can also TAG a container if you need to (useful with multiple versions).
 
 
+## Creating our own container
+
+We are going to use **Ubuntu** base image as our base container.
+Pull the Ubuntu image from the registry first. *(If you don't remember how to do it, look up :) )*
+
+Now we are going to put some useful stuff in that container:
+
+	docker run -it ubuntu:14.10 /bin/bash
+
+----------
+
+Let's get that simple HTTP Implementation somewhere:
+
+    mkdir -p /opt/simple-http-server
+    wget http://FILE-SERVER:PORT/1. basics/simple_http_server.py -O /opt/simple-http-server/simple_http_server.py
+	
+	cat << EOF > /opt/simple-http-server/index.html
+	<html><body><h1>Hello world!</h1></body></html>
+	EOF
+	
+And we also need a script that will start this server for us in the container:
+
+	cat << EOF > /bin/run-simple-server
+	#!/bin/bash
+	python /opt/simple-http-server/simple_http_server.py
+	EOF
+	chmod +x /bin/run-simple-server
+
+You can also simply edit/create those files in the container with nano or vim.
+
+
+----------
+
+Once you are happy with the container, exit, commit and start it by running:
+
+	docker run -d simple-http-server /bin/run-simple-server
+
+
+----------
+This should conclude basic usage and we can navigate to [2. Networking](../2.%20networking/)
 
