@@ -66,6 +66,6 @@ $ docker exec -it web cat /etc/hosts
 
 ---
 
-There's one major problem with the MySQL container we're using. All of it's data is stored within the container.  Once the container exits it's lost forever.  We need to store the data outside of the container, enter [Volumes]()
+There's one major problem with the MySQL container we're using. All of it's data is stored within the container.  Once the container exits it's lost forever.  We need to store the data outside of the container, enter [Volumes](../4.%20volumes)
 
 
