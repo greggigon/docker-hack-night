@@ -10,10 +10,11 @@
 - ~2 GB Free memory
 
 Once you've installed VirtualBox and Vagrant do the following:
-1. Create a directory:
-`mkdir hacknight`
-1. Download [Vagrantfile] to it
-1. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile]
+
+1. Create a directory, for example 'hacknight'
+1. Download all of the files from [here](vagrant/fedora/) to the directory you created.
+
+1. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/fedora/Vagrantfile). **Warning** The VM is almost 3 GB!
 1. Virtualbox will start a Fedora 21 VM with everything installed and configured, you should be able to login using the username *vagrant* and password *vagrant*
 1. Firefox, a terminal and the Sublime Text text editor are available from the activities menu in the top left.
 1. Vagrant will automatically map the current directory on the host to /vagrant in the guest
@@ -30,6 +31,4 @@ You're now ready to follow the exercises below.
 1. [Volumes](docs/4. volumes/README.md)
 1. [Building](docs/5. building/README.md)
 1. [Clustering](docs/6. clustering/README.md)
-
-## References
 
