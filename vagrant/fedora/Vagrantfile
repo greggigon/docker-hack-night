@@ -12,7 +12,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   cpus = 2
   memory = 1024
   gui = true
-  box_name = "fedora-21-workstation-v1"
+  #box_name = "fedora-21-workstation-v1"
+  box_name = "craigmunro/deephack"
   box_url = ""
   openshift_version = "v0.4.1"
 
