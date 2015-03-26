@@ -14,9 +14,9 @@ Once you've installed VirtualBox and Vagrant do the following:
 
 1. Create a directory, for example 'hacknight'
 2. Download all of the files from [here](vagrant/fedora/) to the directory you created.
-3. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/fedora/Vagrantfile). **Warning** The VM is almost 3 GB!
+3. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/fedora/Vagrantfile). **Warning** The VM is almost 1.5 GB!
 4. Virtualbox will start a Fedora 21 VM with everything installed and configured, you should be able to login using the username *vagrant* and password *vagrant*
-5. Firefox, a terminal and the Sublime Text text editor are available from the activities menu in the top left.
+5. Firefox, a terminal and the Sublime Text text editor are available from the panel at the bottom
 6. Vagrant will automatically map the current directory on the host to /vagrant in the guest
 7. If you prefer, you can ssh to the guest from the host using `vagrant ssh` or as follows: `ssh -p 2222 vagrant@localhost`.  The private key is [here](https://github.com/mitchellh/vagrant/tree/master/keys)
 8. `vagrant halt` will shut the VM down
