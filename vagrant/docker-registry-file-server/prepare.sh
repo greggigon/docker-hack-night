@@ -43,3 +43,5 @@ source /home/vagrant/bin/registry
 
 echo "Done ..."
 
+
+
