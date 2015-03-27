@@ -22,7 +22,7 @@ Content of the Dockerfile should look like this:
 
     FROM ubuntu:14:10
     MAINTAINER "Greg Gigon <greg.gigon@somemail.com>"
-	RUN 
+	
 	ADD simple_http_server.py /tmp
 	ADD run-simple-http-serve /tmp
 	RUN mkdir -p /opt/simple-http-server && mv /tmp/run-simple-http-server && \
