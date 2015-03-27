@@ -42,6 +42,18 @@ docker tag mysql:latest $IP:5000/hack/mysql:latest
 docker push $IP:5000/hack/mysql:latest
 docker rmi $IP:5000/hack/mysql:latest
 
+echo "-> Getting OpenShift stuff ..."
+docker pull openshift/origin-pod:latest
+docker tag openshift/origin-pod:latest $IP:5000/hack/origin-pod:latest
+docker push $IP:5000/hack/origin-pod:latest
+docker rmi $IP:5000/hack/origin-pod:latest
+
+docker pull openshift/hello-openshift:latest
+docker tag openshift/hello-openshift:latest $IP:5000/hack/hello-openshift:latest
+docker push $IP:5000/hack/hello-openshift:latest
+docker rmi $IP:5000/hack/hello-openshift:latest
+
+
 echo "Now copying the files ..."
 
 rm -rf /var/file-storage/*
