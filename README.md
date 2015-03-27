@@ -12,7 +12,7 @@
 Once you've installed VirtualBox and Vagrant do the following:
 
 1. Download and extract the GitHub Repo https://github.com/greggigon/docker-hack-night/archive/master.zip
-2. In your command prompt change to the vagrant/deephack directory from the extraced zip
+2. In your command prompt change to the vagrant/deephack directory from the extracted zip
 3. Run `vagrant up` in a command prompt.  This will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/deephack/Vagrantfile). **Warning** The VM is almost 1.5 GB!
 4. Virtualbox will start a Fedora 21 VM with everything installed and configured, you should be able to login using the username *vagrant* and password *vagrant*
 5. Firefox, a terminal and the Sublime Text text editor are available from the panel at the bottom
