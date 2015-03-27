@@ -10,5 +10,5 @@ Best Practices
 - state management?
 -- volumes
 - processes within containers should respond to signals for clean shutdown
-- logging?
-- monitoring?
+- logging - store logs on a volume
+- monitoring - cadvisor?

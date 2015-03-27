@@ -13,8 +13,8 @@ Once you've installed VirtualBox and Vagrant do the following:
 
 
 1. Create a directory, for example 'hacknight'
-2. Download all of the files from [here](vagrant/fedora/) to the directory you created.
-3. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/fedora/Vagrantfile). **Warning** The VM is almost 1.5 GB!
+2. Download all of the files from [here](vagrant/deephack/) to the directory you created.
+3. `vagrant up` will download, configure and start the VM according to the instructions in [Vagrantfile](vagrant/deephack/Vagrantfile). **Warning** The VM is almost 1.5 GB!
 4. Virtualbox will start a Fedora 21 VM with everything installed and configured, you should be able to login using the username *vagrant* and password *vagrant*
 5. Firefox, a terminal and the Sublime Text text editor are available from the panel at the bottom
 6. Vagrant will automatically map the current directory on the host to /vagrant in the guest
@@ -38,3 +38,9 @@ You're now ready to follow the exercises below.
 [Docker](https://docker.io)
 
 [Markdown editor in Browser, Stackedit](http://localhost:9000/#/kanban/Test%20ban)
+
+[Kubernetes](https://github.com/googlecloudplatform/kubernetes)
+
+[OpenShift](https://github.com/openshift/origin)
+
+Docker Security: http://opensource.com/business/14/7/docker-security-selinux, http://opensource.com/business/15/3/docker-security-future

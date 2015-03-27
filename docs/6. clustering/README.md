@@ -54,6 +54,16 @@ This example demonstrates the basic principles of running an application with Op
 
 Before you create anything you can login to the OpenShift management website at https://10.245.2.2:8444/, username: admin, password: admin.  The console will update as you create resources in OpenShift.
 
+## First create a project
+
+Projects can include multiple services, pods, builds, etc.  Quotas and permissions can also be applied to projects. 
+
+`$ openshift ex new-project hack --display-name="Hack Night" --description="The Hack Night Demo Project" --admin=anypassword:admin`
+
+Refresh the management website and you should see the project.
+
+Subsequent `osc` commands will include the argument `-n hack` to refer to the project we just created.
+
 ## Create a pod
 
 The first step is to create a Pod.  Read [hello-pod.json](hello-pod,json), it defines the container to run, the ports it should use and the labels that should be applied.  
@@ -62,7 +72,7 @@ If you already have a container you can replace the image with one of your own.
 
 Create the pod:
 ```
-$ cat hello-pod.json | osc create -f -
+$ cat hello-pod.json | osc create -n hack -f -
 hello-openshift
 ```
 
@@ -70,14 +80,14 @@ OpenShift returns the id of the object that has been created.
 
 Check the pods:
 ```
-$ osc get pods
+$ osc get -n hack pods
 POD                 IP                  CONTAINER(S)        IMAGE(S)                    HOST                LABELS                 STATUS
-hello-openshift                         hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
+hello-openshift     172.17.0.3          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
 ```
 
 You can connect directly to the pod:
 ```
-$ curl localhost:6061
+$ curl 172.17.0.3:8080
 Hello OpenShift!
 ```
 
@@ -88,19 +98,21 @@ CONTAINER ID        IMAGE                              COMMAND                CR
 e878a999274c        openshift/hello-openshift:latest   "/hello-openshift"     2 minutes ago       Up 2 minutes                                 k8s_hello-openshift.34edfc84_hello-openshift.default.api_61f07084-d24a-11e4-be9b-080027f89fba_36ea7203
 ```
 
+If you refresh the management website you'll see your Pod.
+
 ## Create a service
 
 Services provide a stable entrypoint to ephemeral Pods.  [hello-service.json](hello-service.json) defines a port and a selector which is used to select the Pods the service should route traffic to.  Create the Service as follows:
 
 ```
-$ cat hello-service.json | osc create -f -
+$ cat hello-service.json | osc create -n hack -f -
 hello-openshift
 ```
 
 Check the service has been created:
 
 ```
-$ osc get service
+$ osc get -n hack service
 NAME                LABELS                                    SELECTOR               IP                  PORT
 hello-openshift     <none>                                    name=hello-openshift   172.30.17.186       27017
 ```
@@ -111,7 +123,7 @@ Kubernetes has created a stable IP address (using iptables rules) which combined
 $ curl 172.30.17.186:27017
 Hello OpenShift!
 ```
-
+> *NOTE*: Kubernetes is currently working on a DNS Service for the cluster which will allow applications to use DNS names instead of the service IP address.
 
 
 ## Scale the service
@@ -119,29 +131,33 @@ Hello OpenShift!
 Create a replication controller which defines a pod template and the number of pods to create. [hello-controller.json](hello-controller.json) defines the number of replicas for a particular selector and a template for creating pods to maintain the correct number of replicas.  Create your Replica Contoller:
 
 ```
-$ cat hello-controller.json | osc create -f -
+$ cat hello-controller.json | osc create -n hack -f -
 hello-controller
 ```
 
 Check it was created:
 
 ```
-$ osc get rc
+$ osc get -n hack rc
 CONTROLLER          CONTAINER(S)        IMAGE(S)                    SELECTOR               REPLICAS
 hello-controller    hello-openshift     openshift/hello-openshift   name=hello-openshift   1
 ```
 
 So, we have a Replication Contoller 'hello-controller' managaging 1 replica of the image openshift/hello-openshift.  Lets scale up!
 
+Edit [hello-controller.json](hello-controller.json), change the number of replicas to 3
+
+And update the controller:
+
 ```
-$ openshift kube resize --replicas=3 rc hello-controller
-resized
+$ cat hello-controller.json | osc update -n hack -f -
+hello-openshift
 ```
 
 Check the controller again:
 
 ```
-$ osc get rc
+$ osc get -n hack rc
 CONTROLLER          CONTAINER(S)        IMAGE(S)                    SELECTOR               REPLICAS
 hello-controller    hello-openshift     openshift/hello-openshift   name=hello-openshift   3
 ```
@@ -149,7 +165,7 @@ hello-controller    hello-openshift     openshift/hello-openshift   name=hello-o
 And check the running pods:
 
 ```
-$ osc get pods
+$ osc get -n hack pods
 POD                      IP                  CONTAINER(S)        IMAGE(S)                    HOST                LABELS                 STATUS
 hello-openshift-1t5q3   172.17.0.5          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
 hello-openshift-snhqv   172.17.0.4          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
@@ -177,7 +193,7 @@ Now, try stopping one of the containers using the container ID from the command 
 Wait a few seconds and check again:
 
 ```
-$ docker ps
+$ docker ps -l
 CONTAINER ID        IMAGE                              COMMAND                CREATED             STATUS                  PORTS                    NAMES
 880bf49b5d86        openshift/hello-openshift:latest   "/hello-openshift"     2 seconds ago       Up Less than a second                            k8s_hello-openshift.34edfc84_hello-openshift.default.api_61f07084-d24a-11e4-be9b-080027f89fba_6020ced9
 ```
@@ -202,11 +218,46 @@ Hello OpenShift!
 
 This will do the same:
 ```
-$ curl `osc get services hello-openshift --template="{{ .portalIP}}:{{ .port}}"`
+$ curl `osc get -n hack services  hello-openshift --template="{{ .portalIP}}:{{ .port}}"`
 Hello OpenShift!
 ```
 
 The service will transparently redirect traffic to the remaining Pods while the Replication Controller restarts the required Pods.
+
+# Discovery
+
+How do Pods discover the address of the Services they can use?  Kubernetes adds a set of environment variables ({SVCNAME}_SERVICE_HOST and {SVCNAME}_SERVICE_PORT, ie. compatible with Docker Links) to each Pod for each active Service.
+
+Use Docker inspect to have a look:
+
+```
+     "Env": [
+            "KUBERNETES_PORT_443_TCP=tcp://172.30.17.2:443",
+            "KUBERNETES_RO_SERVICE_PORT=80",
+            "KUBERNETES_RO_PORT=tcp://172.30.17.1:80",
+            "KUBERNETES_RO_PORT_80_TCP_PROTO=tcp",
+            "HELLO_OPENSHIFT_PORT_27017_TCP_PROTO=tcp",
+            "HELLO_OPENSHIFT_PORT_27017_TCP_PORT=27017",
+            "HELLO_OPENSHIFT_PORT_27017_TCP_ADDR=172.30.17.66",
+            "KUBERNETES_PORT_443_TCP_PROTO=tcp",
+            "KUBERNETES_RO_SERVICE_HOST=172.30.17.1",
+            "KUBERNETES_RO_PORT_80_TCP=tcp://172.30.17.1:80",
+            "KUBERNETES_RO_PORT_80_TCP_PORT=80",
+            "KUBERNETES_RO_PORT_80_TCP_ADDR=172.30.17.1",
+            "HELLO_OPENSHIFT_PORT_27017_TCP=tcp://172.30.17.66:27017",
+            "KUBERNETES_SERVICE_PORT=443",
+            "KUBERNETES_PORT=tcp://172.30.17.2:443",
+            "KUBERNETES_PORT_443_TCP_PORT=443",
+            "KUBERNETES_PORT_443_TCP_ADDR=172.30.17.2",
+            "HELLO_OPENSHIFT_SERVICE_HOST=172.30.17.66",
+            "HELLO_OPENSHIFT_PORT=tcp://172.30.17.66:27017",
+            "KUBERNETES_SERVICE_HOST=172.30.17.2",
+            "HELLO_OPENSHIFT_SERVICE_PORT=27017"
+        ],
+```
+
+
+
 
 # More Examples
 
