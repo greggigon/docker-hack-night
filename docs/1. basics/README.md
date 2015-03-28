@@ -43,12 +43,6 @@ If you are about to use unofficial and non-public Docker repository, you'll need
 	$ docker pull hostname:port/repository/container:version
 
 
-Let's pull BusyBox as a base container and use that one for some testing
-
-
-	$ docker pull @:busybox
-
-
 To see what Images are downloaded use:
 
 	$ docker images
@@ -66,24 +60,26 @@ To start a container in interactive mode use:
 
 	$ docker run -i -t busybox
 
+Press `Ctrl-D` to exit
+
 To see what containers are running use:
 
-	$ docker ps [-a]
+	$ docker ps
 
-where `-a` lists all containers, running and stopped
+Add `-a` to list all containers, running and stopped
 
 --------
 To run container detached from terminal:
 
-	$ docker run -d --name my-name busybox
+	$ docker run -d --name my-name busybox sleep 300
 
-To stop container:
+Docker will return an ID that you can use to refer to the running container. 
+
+To stop the container:
 
 	$ docker stop my-name|container-id
 
-you can use container ID or a generated name. 
-
-You can find that buy listing containers with `docker ps`.
+you can use container ID or the generated or assigned name.  You can always find the ID or name using `docker ps`.
 
 --------
 
@@ -105,8 +101,7 @@ You can also TAG a container if you need to (useful with multiple versions).
 
 ## Running your first container
 
-We are going to use **Ubuntu** base image as our base container.
-Pull the Ubuntu image from the registry first. *(If you don't remember how to do it, look up :) )*
+We are going to use **Ubuntu** base image as our base container running a simple command.
 
 ```
 $ docker run ubuntu:14.10 /bin/echo "Hello World"
@@ -120,37 +115,30 @@ What just happened?  The Docker client told the Docker daemon to create a contai
 Now we are going to put some useful stuff in that container:
 
 	$ docker run -it ubuntu:14.10 /bin/bash
+	# echo 'Hello YOURNAME!' > index.html
 
-----------
+Use `Ctrl-D` to exit.
 
-Let's get that simple HTTP Implementation somewhere:
+You can now commit the changes you made to your container.  First get the ID of the last container that exited:
 
-    $ mkdir -p /opt/simple-http-server
-    $ wget http://FILE-SERVER:PORT/1. basics/simple_http_server.py -O /opt/simple-http-server/simple_http_server.py
-	
-	$ cat << EOF > /opt/simple-http-server/index.html
-	<html><body><h1>Hello world!</h1></body></html>
-	EOF
-	
-And we also need a script that will start this server for us in the container:
+`$ docker ps -al`
 
-	$ cat << EOF > /bin/run-simple-server
-	#!/bin/bash
-	python /opt/simple-http-server/simple_http_server.py
-	EOF
-	$ chmod +x /bin/run-simple-server
+Next, commit the image:
 
-You can also simply edit/create those files in the container with nano or vim.
+`$ docker commit id yourname/helloworld`
 
+Now, we can run our image, this time we're telling python to run a web server to serve the file we created.:
 
-----------
+`$ docker run -d -p 8000:8000 yourname/helloworld python3 -m http.server`
 
-Once you are happy with the container, exit, commit and start it by running:
+Test it:
 
-	$ docker run -d simple-http-server /bin/run-simple-server
+```
+$ curl http://localhost:8000
+Hello YOURNAME!
+```
 
-
-----------
+You've created your first container!   Run `docker images` and you should see it.  We'll see later a better way to build containers.  For now, it's worth noting that on disk our container is only another (very small) layer on top of the existing Ubuntu image which makes Docker very space efficient.
 
 This should conclude basic usage and we can navigate to [2. Networking](../2.%20networking/)
 

@@ -12,7 +12,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   cpus = 2
   memory = 1024
   gui = true
-  #box_name = "fedora-21-xfce-v1"
   box_name = "craigmunro/deephack"
   openshift_version = "v0.4.1"
 
@@ -25,7 +24,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # general config
   config.vm.box = box_name
-  # config.vm.box_url = ''
   config.ssh.insert_key = insert_key
   config.vm.synced_folder ".", "/vagrant", disabled: false
   config.vm.provider "virtualbox" do |vb|
