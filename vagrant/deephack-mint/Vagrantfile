@@ -35,6 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision :shell, path: "bootstrap.sh", args: [openshift_version]
   config.vm.provision :shell, path: "master.sh", args: [master_ip, openshift_version]
-  #config.vm.provision :shell, path: "clean_box.sh"
+  config.vm.provision :shell, path: "prepare-documentation.sh"
+  config.vm.provision :shell, path: "clean_box.sh"
 
 end
