@@ -3,8 +3,8 @@ Automating Container Builds
 
 So far we covered how to manually deal with creating and building Containers. In this section we will:
 
- - Learn how to automate container building?
- - How to share your images?
+ - Learn how to automate container building
+ - How to share your images
 
 ### Basics of Dockerfile
 
@@ -51,4 +51,4 @@ Or you can push it to Docker registry by tagging it first with a registry addres
 
 
 ----------
-You know how to auto-build the containers, run them, link, expose on network and persist the data. Now it's time for [Clustering](../6.%20clustering/) the containers.
+You now know how to auto-build containers, run them, link, expose on network and persist the data. Now it's time for [Clustering](../6.%20clustering/) the containers.

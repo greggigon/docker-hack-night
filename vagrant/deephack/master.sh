@@ -46,7 +46,7 @@ Environment="MASTER_IP=${MASTER_IP}"
 Environment="MINION_IPS=${MINION_IPS}"
 Restart=always
 ExecStartPre=-/usr/bin/docker rm -f %n
-ExecStart=/usr/bin/docker run --rm -i --name %n --net=host -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/openshift:/var/lib/openshift --privileged openshift/origin:${OPENSHIFT_VERSION} start --master=${MASTER_IP} --nodes=${MINION_IPS}
+ExecStart=/usr/bin/docker run --rm -i --name %n --net=host -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/openshift:/var/lib/openshift --privileged openshift/origin:${OPENSHIFT_VERSION} start --master=${MASTER_IP}
 ExecStartPost=sleep 120 && chmod +r "$KUBECONFIG" && chmod +r /var/lib/openshift/openshift.local.certificates/openshift-client/key.key
 ExecStop=/usr/bin/docker stop -t 5 %n
 TimeoutStartSec=300

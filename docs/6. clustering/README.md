@@ -21,7 +21,7 @@ Concepts:
 - **Pods**: Co-located groups of Docker containers with shared volumes.  The smallest deployable unit.  Ephemeral.  Pods are individually routable within a Kubernetes cluster, default Docker containers are not.  Each Pod has its own IP address within the cluster, this also means that each pod has it's own range of ports (ie. every pod can bind to port 8000).  See [Pods](https://github.com/GoogleCloudPlatform/kubernetes/blob/master/docs/pods.md) for more.
 - **Replication Controller**: manage the lifecycle of pods.  They ensure that the required number of pods are always running.  See [Replication Controllers](https://github.com/GoogleCloudPlatform/kubernetes/blob/master/docs/replication-controllers.md) for more.
 - **Services**: provide the mechanism by which different groups of Pods (with transient IPs) or external services can communicate with a set of Pods.  Provides a single stable IP and port.  Acts as a basic load-balancer.  Implemented using iptables rules on each host.
-- **Labels*: Labels are arbitrary key/value pairs which can be attached to objects (Pods, Services, etc) Example:
+- **Labels**: Labels are arbitrary key/value pairs which can be attached to objects (Pods, Services, etc) Example:
 `release: "1.2.4", environment: "dev", tier: "frontend", datacenter: "london"`
 - **Selectors**: Used for selecting a group of objects based on their label.  For example Service 'ProductionFrontend' will can select all Pods with labels tier='frontend' and environment='production' and route traffic to them.
 
@@ -36,8 +36,9 @@ $ docker ps
 CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                    NAMES          
 a1abced25cba        openshift/origin:v0.4.1   "/usr/bin/openshift    22 minutes ago      Up 22 minutes                                openshift-master.service
 ```
+If it's not running, run `sudo sytemctl start openshift-master`
 
-The main command for interacting with openshift is `osc`
+The main command for interacting with openshift is `osc`.  The following show's how many members, 'minions', we have in our cluster:
 
 ```
 $ osc get minions
@@ -56,25 +57,29 @@ Before you create anything you can login to the OpenShift management website at 
 
 ## First create a project
 
-Projects can include multiple services, pods, builds, etc.  Quotas and permissions can also be applied to projects. 
+Projects can include multiple services, pods, builds, etc.  Quotas and permissions can also be applied to projects.   Lets create one first, type the following as written (ie.  don't change anypassword):
 
 `$ openshift ex new-project hack --display-name="Hack Night" --description="The Hack Night Demo Project" --admin=anypassword:admin`
 
-Refresh the management website and you should see the project.
+Refresh the management website and you should see the empty project.
 
 Subsequent `osc` commands will include the argument `-n hack` to refer to the project we just created.
 
 ## Create a pod
 
-The first step is to create a Pod.  Read [hello-pod.json](hello-pod,json), it defines the container to run, the ports it should use and the labels that should be applied.  
+The next step is to create a Pod.  Remembder, Pods are groups of associated containers.  Containers in a Pod share a public IP address and volumes, think 'linked containers'.  Put things in a Pod that need to be deployed and scaled together.
 
-If you already have a container you can replace the image with one of your own.
+Read [hello-pod.json](hello-pod,json), it defines the container to run, the ports it should use and the labels that should be applied.  
+
+> *NOTE*: If you already built a container you can replace the image with one of your own.
 
 Create the pod:
 ```
 $ cat hello-pod.json | osc create -n hack -f -
 hello-openshift
 ```
+
+> *NOTE*: there's an '/home/vagrant/openshift' directory in each of the VMs that contains all of the json required for the examples.
 
 OpenShift returns the id of the object that has been created.
 
@@ -85,13 +90,15 @@ POD                 IP                  CONTAINER(S)        IMAGE(S)            
 hello-openshift     172.17.0.3          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
 ```
 
+Kubernetes has started our container openshift/hello-openshift on a host with the labels 'name=hello-openshift' and assigned the IP address 172.17.0.3 to the Pod.
+
 You can connect directly to the pod:
 ```
 $ curl 172.17.0.3:8080
 Hello OpenShift!
 ```
 
-Use docker commands to see the container running on the local host:
+You can still use the underlying docker commands to see the container running on the local host:
 ```
 $ docker ps
 CONTAINER ID        IMAGE                              COMMAND                CREATED             STATUS              PORTS                    NAMES
@@ -102,7 +109,9 @@ If you refresh the management website you'll see your Pod.
 
 ## Create a service
 
-Services provide a stable entrypoint to ephemeral Pods.  [hello-service.json](hello-service.json) defines a port and a selector which is used to select the Pods the service should route traffic to.  Create the Service as follows:
+Pods are ephemeral, they may come and go and will be assigned a different IP address every time.  How do we manage this?
+
+Services provide a stable entrypoint to ephemeral Pods.  [hello-service.json](hello-service.json) defines a port and a selector (in this case name=hello-openshift, see label of Pod above) which is used to select the Pods the service should route traffic to.  Create the Service as follows:
 
 ```
 $ cat hello-service.json | osc create -n hack -f -
@@ -143,7 +152,7 @@ CONTROLLER          CONTAINER(S)        IMAGE(S)                    SELECTOR    
 hello-controller    hello-openshift     openshift/hello-openshift   name=hello-openshift   1
 ```
 
-So, we have a Replication Contoller 'hello-controller' managaging 1 replica of the image openshift/hello-openshift.  Lets scale up!
+So, we have a Replication Contoller 'hello-controller' managaging 1 replica of the image openshift/hello-openshift that was already running.  Lets scale up!
 
 Edit [hello-controller.json](hello-controller.json), change the number of replicas to 3
 
@@ -171,6 +180,8 @@ hello-openshift-1t5q3   172.17.0.5          hello-openshift     openshift/hello-
 hello-openshift-snhqv   172.17.0.4          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
 hello-openshift         172.17.0.3          hello-openshift     openshift/hello-openshift   master/127.0.0.1    name=hello-openshift   Running
 ```
+
+> *NOTE*: Each of these Pods has a distinct IP even though they're all running on the same host (in this case).  That means they can all bind to the same port, Kubernetes and docker will take care of the mapping and we don't have to worry about managing ports or collisions.
 
 And the containers on the host:
 
@@ -256,8 +267,9 @@ Use Docker inspect to have a look:
         ],
 ```
 
+# Conclusion
 
-
+Docker gives us a system for packaging our applications and restricting resource usage.  Kubernetes and OpenShift allow us to use those containers to build applications, described in code, that can scale and failover transparently while increasing host utilisation.
 
 # More Examples
 
