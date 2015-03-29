@@ -7,22 +7,22 @@ We are going to learn the following stuff:
 * How to expose what is happening inside container to the outside world?
 
 ## Running Simple HTTP Server
+
 We need to expose port that is running inside container to the outside world.
 
-	$ docker run -d -p 8000:8001 --name simple-http-server simple-http-server /bin/run-simple-server
+	$ docker run -d -p 8000:8001 yourname/helloworld python3 -m http.server
 
 This means that the port **8000** inside container, will be mapped to port **8001** of our host.
-
 
 ----------
 
 We can also expose all the range of the ports in the Container at random with **-P** option:
 
-	$ docker run -d -P --name simple-http-server simple-http-server /bin/run-simple-server
+	$ docker run -d -P --name yourname/helloworld python3 -m http.server
 	
 We can also directly use Host Network interfaces when we are troubleshooting with **--net=host**:
 
-	$ docker run -d --net=host --name simple-http-server simple-http-server /bin/run-simple-server
+	$ docker run -d --net=host yourname/helloworld python3 -m http.server
 
 ## Running MySQL database
 
@@ -30,7 +30,7 @@ Let's start the MySQL Database:
 	
 	$ docker run -p 3306:3306 --name mysqldb -e MYSQL_ROOT_PASSWORD=password -d mysql
 
-> *NOTE*: the `-e` argument allows you to inject environment variables.  It can be repeated multiple times to add multiple variables.
+> *NOTE*: the `-e` argument allows you to inject environment variables.  It can be repeated multiple times to add multiple variables. `--name` is naming the container. You can see when you list the containers `docker ps -a` that those have randomly generated names. `--name` will use the name that you provide. The name has to be unique.
 
 Now, we should have MySQL running in a container (you can check with `docker ps`).  Now we should be able to connect to the Database:
 	
