@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<title>Hello Strapdown</title>
+
+<xmp theme="united" style="display:none;">
+
 Basic Docker Usage
 ===================
 
@@ -153,4 +159,8 @@ Once you are happy with the container, exit, commit and start it by running:
 ----------
 
 This should conclude basic usage and we can navigate to [2. Networking](../2.%20networking/)
+</xmp>
+
+<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>
+</html>
 
