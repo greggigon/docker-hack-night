@@ -122,6 +122,9 @@ CONTAINER ID        IMAGE                              COMMAND                CR
 
 Here you can see the container ID, the image used, the command, any ports that have been exposed and the current status.  Docker also assigns a random name to each container, *serene_shockley*, which can be used instead of the container ID.  We'll see later how to assign our own names.
 
+Docker automatically captures stdout and stderr from the process.   You can view this using the `docker logs` command with the container name or id.
+
+
 ```
 $ docker logs serene_shockley
 Hello World
@@ -130,7 +133,7 @@ Hello World
 Hello World
 ```
 
-> *NOTE*: Add -t as an argument to logs to prefix the output with a timestamp.
+> *NOTE*: Add -t as an argument to logs to prefix the output with a timestamp.  Add `-f` to follow the logs.
 
 Before we stop our container lets look for the process on the host:
 

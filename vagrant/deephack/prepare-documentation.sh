@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+#set -ex
 
 sudo yum -y install pandoc
 
