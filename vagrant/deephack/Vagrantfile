@@ -56,6 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     master.vm.network "forwarded_port", guest: 9080, host: 9080
 
     config.vm.provision :shell, path: "master.sh", args: [master_ip, minion_ips_str]
+    config.vm.provision :shell, path: "prepare-documentation.sh"
   end
 
   if num_minions > 0
