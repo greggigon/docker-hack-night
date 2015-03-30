@@ -10,7 +10,7 @@ Containers provide a lightweight way to package and run applications but how do 
 
 Google has open-sourced their internal container management system which they use to deploy, monitor and scale their applications.  It is designed to be:
 
-- **lean**: lightweight, accesible, simple
+- **lean**: lightweight, accessible, simple
 - **portable**: public, private, hybrid
 - **extensible**: modular, pluggable, hookable, composable
 - **self-healing**: auto-placement, auto-restart, auto-replication
@@ -138,7 +138,7 @@ Hello OpenShift!
 
 ## Scale the service
 
-Create a replication controller which defines a pod template and the number of pods to create. [hello-controller.json](hello-controller.json) defines the number of replicas for a particular selector and a template for creating pods to maintain the correct number of replicas.  Create your Replica Contoller:
+Create a replication controller which defines a pod template and the number of pods to create. [hello-controller.json](hello-controller.json) defines the number of replicas for a particular selector and a template for creating pods to maintain the correct number of replicas.  Create your Replica Controller:
 
 ```
 $ cat hello-controller.json | osc create -n hack -f -
@@ -153,7 +153,7 @@ CONTROLLER          CONTAINER(S)        IMAGE(S)                    SELECTOR    
 hello-controller    hello-openshift     openshift/hello-openshift   name=hello-openshift   1
 ```
 
-So, we have a Replication Contoller 'hello-controller' managaging 1 replica of the image openshift/hello-openshift that was already running.  Lets scale up!
+So, we have a Replication Controller 'hello-controller' managaging 1 replica of the image openshift/hello-openshift that was already running.  Lets scale up!
 
 Edit [hello-controller.json](hello-controller.json), change the number of replicas to 3
 
@@ -197,7 +197,7 @@ c720dbe6d3bc        openshift/hello-openshift:latest   "/hello-openshift"     6 
 02b03ab31175        openshift/origin-pod:v0.4.1        "/pod"                 22 minutes ago      Up 22 minutes       0.0.0.0:6061->8080/tcp   k8s_POD.e3b5ea67_hello-openshift.default.api_61f07084-d24a-11e4-be9b-080027f89fba_f76dceca
 ```
 
-> *NOTE*: Above we first created a standalone Pod without a Replication Contoller, it would be better to create a Replication Contoller with a replica of 1.
+> *NOTE*: Above we first created a standalone Pod without a Replication Controller, it would be better to create a Replication Controller with a replica of 1.
 
 Now, try stopping one of the containers using the container ID from the command above:
 `$ docker stop cf8091f8693b`

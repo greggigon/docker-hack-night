@@ -39,7 +39,7 @@ To list the images use:
 
 	$ docker images
 
-You should see something like this bellow:
+You should see something like this below:
 
 	vagrant@master ~ $ docker images
 	REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
@@ -83,7 +83,7 @@ You can create a container that you can interact with:
 $ docker run -i -t ubuntu:14.10
 ```
 
-> *NOTE*: The arguments `-i` allows you to write to the container, `-t` assigns a psuedo-tty so we can create an interactive shell.
+> *NOTE*: The arguments `-i` allows you to write to the container, `-t` assigns a pseudo-tty so we can create an interactive shell.
 
 You're now running within a container, let's explore!
 
@@ -185,7 +185,7 @@ greggigon/helloworld        latest              a8384f4a56a7        4 seconds ag
 ...
 ```
 
-The final column shows the 'Virtual Size'.   This is the size of our base Ubuntu image plus a new, very small, layer for the container we just commited.  As many different containers can share the same base image Docker is very space efficient.
+The final column shows the 'Virtual Size'.   This is the size of our base Ubuntu image plus a new, very small, layer for the container we just committed.  As many different containers can share the same base image Docker is very space efficient.
 
 Now, we can run our image.  Python is already installed in our Ubuntu image, we'll use that to serve the page we created:
 

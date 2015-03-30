@@ -67,7 +67,7 @@ As each instruction is committed as an image Docker can use previous layers as a
 
 ### Dockerfile commands explained
 
-| Command        | Example           | Explenation  |
+| Command        | Example           | Explanation  |
 | ------------- |:-------------|:-----|
 | FROM      | FROM ubuntu:14.10 | Which image to use as a base image |
 | MAINTAINER     | MAINTAINER "Greg Ster my@email.com"|Who is the creator info|
