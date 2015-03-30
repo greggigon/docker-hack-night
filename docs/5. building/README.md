@@ -16,6 +16,7 @@ Let's start with the basics.
  2. Add the **index.html** to that folder (put some interesting text in the index.html file).
 
 ----------
+
 Content of the Dockerfile should look like this:
 
     FROM ubuntu:14.10
@@ -28,11 +29,13 @@ Content of the Dockerfile should look like this:
 
 
 ----------
+
 We can now build the container from the command line with command:
 
 	docker build -t yourname/simple-http-server .
 
 ### Dockerfile commands explained
+
 
 | Command        | Example           | Explenation  |
 | ------------- |:-------------|:-----|
@@ -65,4 +68,5 @@ Or you can push it to Docker registry by tagging it first with a registry addres
 
 
 ----------
+
 You now know how to auto-build containers, run them, link, expose on network and persist the data. Now it's time for [Clustering](../6.%20clustering/) the containers.
