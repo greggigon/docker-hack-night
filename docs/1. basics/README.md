@@ -65,51 +65,6 @@ To remove images (but don't do it, we'll need them in the Hacks):
 	$ docker rmi <image-name>
 
 
-### Running/Stopping container
-
-To start a container in interactive mode use:
-
-	$ docker run -i -t busybox
-
-Press `Ctrl-D` to exit
-
-To see what containers are running use:
-
-	$ docker ps
-
-Add `-a` to list all containers, running and stopped
-
---------
-To run container detached from terminal:
-
-	$ docker run -d --name my-name busybox sleep 300
-
-Docker will return an ID that you can use to refer to the running container. 
-
-To stop the container:
-
-	$ docker stop my-name|container-id
-
-you can use container ID or the generated or assigned name.  You can always find the ID or name using `docker ps`.
-
---------
-
-To remove a container use:
-
-	$ docker rm name|id
-
-Container will not be removed if it is still running. Docker will tell you about that.
-
-### Persisting containers
-
-To commit container use:
-
-	$ docker commit name|id [REPOSITORY:TAG]
-	$ docker commit my-name greg/container:latest
-
-You can also TAG a container if you need to (useful with multiple versions).
-
-
 ## Running your first container
 
 We are going to use **Ubuntu** base image as our base container running a simple command.
@@ -120,6 +75,80 @@ Hello World
 ```
 
 What just happened?  The Docker client told the Docker daemon to create a container using the ubuntu:14.10 image and to run the command /bin/echo with the arguments "Hello World" within that container.
+
+## An interactive container
+
+You can create a container that you can interact with:
+```
+$ docker run -i -t busybox
+```
+
+The arguments `-i` keeps STDIN open to the container, `-t` assigns a psuedo-tty so we can creaet an interactive shell.
+
+Once you've started the container you can explore:
+
+```
+# hostname
+f18854e5bc76
+# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.4  0.3  18184  3260 ?        Ss   09:41   0:00 /bin/bash
+```
+
+Docker has set the hostname to the ID of the container and there is only one process running, /bin/bash, which has PID 1.
+
+Press Ctrl-D to exit the container.
+
+## A daemonised container
+
+More useful than the interactive container is a container that we can use for running applications and services.  For this we need to run the container as a daemon.   Try the following:
+
+```
+$ docker run -d ubuntu:14.10 /bin/sh -c "while true; do echo Hello World; sleep 10; done"
+56a2aadc7eac192e1ebd88c8c089b6d4ee52f9b791a89733b6cf3fc9e03fd141
+```
+
+Adding the `-d` argument tells Docker to run the container as a daemon.  Once it's started Docker returns the (long) container ID.
+
+Use `docker ps` to show the running containers:
+
+```
+$ docker ps
+CONTAINER ID        IMAGE                              COMMAND                CREATED              STATUS              PORTS                    NAMES
+56a2aadc7eac        ubuntu:14.10                       "/bin/sh -c 'while t   About a minute ago   Up About a minute                            serene_shockley
+```
+
+> *NOTE*: Add `-a` to `docker ps` to list all containers, running and stopped
+
+Here you can see the container ID, the image used, the command, any ports that have been exposed and the current status.  Docker also assigns a random name to each container, *serene_shockley*, which can be used instead of the container ID.  We'll see later how to assign our own names.
+
+```
+$ docker logs serene_shockley
+Hello World
+Hello World
+Hello World
+Hello World
+```
+
+> *NOTE*: Add -t as an argument to logs to prefix the output with a timestamp.
+
+Before we stop our container lets look for the process on the host:
+
+```
+$ ps aux 
+...
+root      3490  0.0  0.1   4444  1480 ?        Ss   10:46   0:00 /bin/sh -c while true; do echo Hello World; sleep 10; done
+...
+```
+
+That's the process that's running within our container. So, from inside the container we can only see our own process.  From the host running the container we can see all processes that are running within containers.
+
+Now we can stop our daemonised container:
+
+```
+$ docker stop serene_shockley
+```
+
 
 ## Creating our own container
 
@@ -132,15 +161,21 @@ Use `Ctrl-D` to exit.
 
 You can now commit the changes you made to your container.  First get the ID of the last container that exited:
 
-`$ docker ps -al`
+```
+$ docker ps -al
+```
 
-Next, commit the image:
+Next, commit the image, the syntax is:
 
-`$ docker commit id yourname/helloworld`
+	$ docker commit name|id [REPOSITORY:TAG]
+	
+```
+$ docker commit f18854e5bc76 greggigon/helloworld:latest
+```
 
 Now, we can run our image, this time we're telling python to run a web server to serve the file we created.:
 
-`$ docker run -d -p 8000:8000 yourname/helloworld python3 -m http.server`
+`$ docker run -d -p 8000:8000 greggigon/helloworld python3 -m http.server`
 
 Test it:
 
