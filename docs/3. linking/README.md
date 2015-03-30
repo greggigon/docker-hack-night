@@ -71,6 +71,14 @@ $ docker exec -it web cat /etc/hosts
 172.17.0.2	mysql
 ```
 
+Using the hosts information we could connect to the mysql container directly:
+```
+$ docker exec -it web ping mysql
+PING mysql (172.17.0.8): 56 data bytes
+64 bytes from 172.17.0.8: icmp_seq=0 ttl=64 time=0.320 ms
+64 bytes from 172.17.0.8: icmp_seq=1 ttl=64 time=0.478 ms
+```
+
 ---
 
 There's one major problem with the MySQL container we're using. All of it's data is stored within the container.  Once the container exits it's lost forever.  We need to store the data outside of the container, enter [Volumes](../4.%20volumes)

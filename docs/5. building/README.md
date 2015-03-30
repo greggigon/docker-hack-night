@@ -12,8 +12,8 @@ Dockerfile is a recipe for building a Docker container. We are going to create a
 
 Let's start with the basics. 
 
- 1. Create empty folder and empty **Dockerfile** somewhere
- 2. Add the **index.html** to that folder (put some interesting text in the index.html file).
+ 1. Create empty folder and a file, called **Dockerfile** somewhere
+ 2. Add a file,  **index.html**, to that folder (put some interesting text in the index.html file).
 
 ----------
 
@@ -32,10 +32,15 @@ Content of the Dockerfile should look like this:
 
 We can now build the container from the command line with command:
 
-	docker build -t yourname/simple-http-server .
+	$ docker build -t greggigon/simple-http-server .
+
+Run `docker images` now and you should see your container.
+
+Instructions in the Dockerfile are executed from the top down.  Each instruction is executed in a new layer run in a new container.  If, for whatever reason, compilation fails you can run a container from the last successful instruction and run the next step manually to debug.  
+
+As each instruction is committed as an image Docker can use previous layers as a cache.  This means that the order of instructions in the Dockerfile is important.  If all of your images share the same base set of instructions they can share the same layers.  Specific changes to each image should be made at the end of the Dockerfile.
 
 ### Dockerfile commands explained
-
 
 | Command        | Example           | Explenation  |
 | ------------- |:-------------|:-----|
@@ -43,7 +48,7 @@ We can now build the container from the command line with command:
 | MAINTAINER     | MAINTAINER "Greg Ster my@email.com"|Who is the creator info|
 | RUN | RUN mkdir -p /tmp/foo |Execute command inside container|
 | | RUN ["mkdir -p /tmp/foo", "ls -l /tmp/foo"]||
-|CMD | CMD ["mkdir", "-p", "/foo/bar"]|There can only be 1 command in the Dockerfile. It should be used to provide default for executin container.|
+|CMD | CMD ["mkdir", "-p", "/foo/bar"]|There can only be 1 command in the Dockerfile. It should be used to provide default command to execute for the container.|
 |EXPOSE|EXPOSE 8000| Marks container as exposing port 8000. Doesn't do the mapping. Used when Linking containers.|
 |ENV| ENV http_proxy "http://localhost:8008"| Sets environment variables in the container|
 |ADD|ADD my-file.txt /root/| Copy files and directories from source which can also be a URL to destination|
@@ -54,6 +59,11 @@ We can now build the container from the command line with command:
 |WORKDIR| WORKDIR /root| Sets the working directory for RUN, CMD and ENTRYPOINT commands|
 
 More detailed description of each [Dockerfile Commands in here](Dockerfile-DockerDocumentation.html).
+
+#### CMD vs ENTRYPOINT
+
+The *CMD* instruction can be overridden on the docker run command line while *ENTRYPOINT* can not.   Image authors may choose to use ENTRYPOINT to ensure their containers behave in a certain way.  CMD can still be used in conjunction with ENTRYPOINT to provide default arguments.
+
 
 ### Sharing the container
 

@@ -8,21 +8,11 @@ We are going to learn the following stuff:
 
 ## Running Simple HTTP Server
 
-We need to expose port that is running inside container to the outside world.
+Previously we ran the following container, which should still be running:
 
-	$ docker run -d -p 8000:8001 yourname/helloworld python3 -m http.server
+	$ docker run -d -p 9000:8000 greggigon/helloworld python3 -m http.server
 
-This means that the port **8000** inside container, will be mapped to port **8001** of our host.
-
-----------
-
-We can also expose all the range of the ports in the Container at random with **-P** option:
-
-	$ docker run -d -P --name yourname/helloworld python3 -m http.server
-	
-We can also directly use Host Network interfaces when we are troubleshooting with **--net=host**:
-
-	$ docker run -d --net=host yourname/helloworld python3 -m http.server
+This means that the port **8000** inside container, will be mapped to port **9000** of our host.
 
 ## Running MySQL database
 
@@ -52,6 +42,7 @@ Before we move on to the next section lets create a Database for our next applic
 	| wordpress          |
 	+--------------------+
 	4 rows in set (0.00 sec)
+    mysql> exit
 
 > *WARNING*: If you restart the database container all changes will be lost! We'll be looking at [Volumes](../4.%20volumes/) later to avoid this.
 

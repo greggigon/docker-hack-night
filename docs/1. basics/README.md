@@ -80,12 +80,12 @@ What just happened?  The Docker client told the Docker daemon to create a contai
 
 You can create a container that you can interact with:
 ```
-$ docker run -i -t busybox
+$ docker run -i -t ubuntu:14.10
 ```
 
-The arguments `-i` keeps STDIN open to the container, `-t` assigns a psuedo-tty so we can creaet an interactive shell.
+> *NOTE*: The arguments `-i` allows you to write to the container, `-t` assigns a psuedo-tty so we can create an interactive shell.
 
-Once you've started the container you can explore:
+You're now running within a container, let's explore!
 
 ```
 # hostname
@@ -108,7 +108,7 @@ $ docker run -d ubuntu:14.10 /bin/sh -c "while true; do echo Hello World; sleep 
 56a2aadc7eac192e1ebd88c8c089b6d4ee52f9b791a89733b6cf3fc9e03fd141
 ```
 
-Adding the `-d` argument tells Docker to run the container as a daemon.  Once it's started Docker returns the (long) container ID.
+Adding the `-d` argument tells Docker to run the container as a daemon, ie. in the background.  Once it's started Docker returns the (long) container ID.
 
 Use `docker ps` to show the running containers:
 
@@ -143,7 +143,7 @@ $ ps aux
 root      3490  0.0  0.1   4444  1480 ?        Ss   10:46   0:00 /bin/sh -c while true; do echo Hello World; sleep 10; done
 ...
 ```
-
+	
 That's the process that's running within our container. So, from inside the container we can only see our own process.  From the host running the container we can see all processes that are running within containers.
 
 Now we can stop our daemonised container:
@@ -158,7 +158,7 @@ $ docker stop serene_shockley
 Now we are going to put some useful stuff in that container:
 
 	$ docker run -it ubuntu:14.10 /bin/bash
-	# echo 'Hello YOURNAME!' > index.html
+	# echo 'Hello Greg!' > index.html
 
 Use `Ctrl-D` to exit.
 
@@ -176,15 +176,28 @@ Next, commit the image, the syntax is:
 $ docker commit f18854e5bc76 greggigon/helloworld:latest
 ```
 
-Now, we can run our image, this time we're telling python to run a web server to serve the file we created.:
+If you run `docker images` again now, you'll see your brand new container:
 
-`$ docker run -d -p 8000:8000 greggigon/helloworld python3 -m http.server`
+```
+$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+greggigon/helloworld        latest              a8384f4a56a7        4 seconds ago       194.4 MB
+...
+```
+
+The final column shows the 'Virtual Size'.   This is the size of our base Ubuntu image plus a new, very small, layer for the container we just commited.  As many different containers can share the same base image Docker is very space efficient.
+
+Now, we can run our image.  Python is already installed in our Ubuntu image, we'll use that to serve the page we created:
+
+`$ docker run -d -p 9000:8000 greggigon/helloworld python3 -m http.server 8000`
+
+> *NOTE*: the -p is for exposing ports.  We'll discuss that more in the next section.
 
 Test it:
 
 ```
-$ curl http://localhost:8000
-Hello YOURNAME!
+$ curl http://localhost:9000
+Hello Greg!
 ```
 
 You've created your first container!   Run `docker images` and you should see it.  We'll see later a better way to build containers.  For now, it's worth noting that on disk our container is only another (very small) layer on top of the existing Ubuntu image which makes Docker very space efficient.
