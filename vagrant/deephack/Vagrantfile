@@ -12,7 +12,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   cpus = 2
   memory = 1024
   gui = true
-  box_name = "craigmunro/deephack"
+  #box_name = "craigmunro/deephack"
+  box_name = "fedora-21-xfce-v4"
   openshift_version = "v0.4.1"
 
   # configure shell, yum, docker etc to use proxy if running internally
@@ -32,7 +33,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.gui = gui
     vb.customize [
       "modifyvm", :id,
-      "--groups", "/Hack Night"
+      "--groups", "/Hack Night",
+      "--clipboard", "bidirectional",
     ]
   end
 

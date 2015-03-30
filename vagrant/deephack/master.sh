@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+#set -ex
 
 if [ "$#" -lt 2 ]; then
   echo "this script requires 2 arguments: MASTER_IP [MINION_IPS]"
