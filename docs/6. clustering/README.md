@@ -17,7 +17,7 @@ Google has open-sourced their internal container management system which they us
 
 Concepts:
 
-- **Clusters**: Kubernetes (or k8s) builds clusters of resources on to which containers can be deployed
+- **Clusters**: Kubernetes (or k8s for short) builds clusters of resources on to which containers can be deployed
 - **Pods**: Co-located groups of Docker containers with shared volumes.  The smallest deployable unit.  Ephemeral.  Pods are individually routable within a Kubernetes cluster, default Docker containers are not.  Each Pod has its own IP address within the cluster, this also means that each pod has it's own range of ports (ie. every pod can bind to port 8000).  See [Pods](https://github.com/GoogleCloudPlatform/kubernetes/blob/master/docs/pods.md) for more.
 - **Replication Controller**: manage the lifecycle of pods.  They ensure that the required number of pods are always running.  See [Replication Controllers](https://github.com/GoogleCloudPlatform/kubernetes/blob/master/docs/replication-controllers.md) for more.
 - **Services**: provide the mechanism by which different groups of Pods (with transient IPs) or external services can communicate with a set of Pods.  Provides a single stable IP and port.  Acts as a basic load-balancer.  Implemented using iptables rules on each host.
@@ -38,7 +38,7 @@ a1abced25cba        openshift/origin:v0.4.1   "/usr/bin/openshift    22 minutes 
 ```
 If it's not running, run `sudo sytemctl start openshift-master`
 
-The main command for interacting with openshift is `osc`.  The following show's how many members, 'minions', we have in our cluster:
+The main command for interacting with openshift is `osc`.  The following show's how many members, 'minions', we have in our cluster.  In our case we just have one:
 
 ```
 $ osc get minions
@@ -67,19 +67,20 @@ Subsequent `osc` commands will include the argument `-n hack` to refer to the pr
 
 ## Create a pod
 
-The next step is to create a Pod.  Remembder, Pods are groups of associated containers.  Containers in a Pod share a public IP address and volumes, think 'linked containers'.  Put things in a Pod that need to be deployed and scaled together.
+The next step is to create a Pod.  Remember, Pods are groups of associated containers.  Containers in a Pod share a public IP address and volumes, think 'linked containers'.  Put things in a Pod that need to be deployed and scaled together.
 
 Read [hello-pod.json](hello-pod,json), it defines the container to run, the ports it should use and the labels that should be applied.  
 
 > *NOTE*: If you already built a container you can replace the image with one of your own.
 
 Create the pod:
+
+> *NOTE*: there's an '/home/vagrant/openshift' directory in each of the VMs that contains all of the json required for the examples.
+
 ```
 $ cat hello-pod.json | osc create -n hack -f -
 hello-openshift
 ```
-
-> *NOTE*: there's an '/home/vagrant/openshift' directory in each of the VMs that contains all of the json required for the examples.
 
 OpenShift returns the id of the object that has been created.
 
@@ -94,7 +95,7 @@ Kubernetes has started our container openshift/hello-openshift on a host with th
 
 You can connect directly to the pod:
 ```
-$ curl 172.17.0.3:8080
+$ curl $POD_IP:8080
 Hello OpenShift!
 ```
 
@@ -129,7 +130,7 @@ hello-openshift     <none>                                    name=hello-openshi
 Kubernetes has created a stable IP address (using iptables rules) which combined with the port you defined can be used to connect to your Pods.
 
 ```
-$ curl 172.30.17.186:27017
+$ curl $SERVICE_IP:27017
 Hello OpenShift!
 ```
 > *NOTE*: Kubernetes is currently working on a DNS Service for the cluster which will allow applications to use DNS names instead of the service IP address.
@@ -141,7 +142,7 @@ Create a replication controller which defines a pod template and the number of p
 
 ```
 $ cat hello-controller.json | osc create -n hack -f -
-hello-controller
+hello-openshift
 ```
 
 Check it was created:
@@ -163,7 +164,7 @@ $ cat hello-controller.json | osc update -n hack -f -
 hello-openshift
 ```
 
-Check the controller again:
+Check the controller again, notice the number of replicas has increased.
 
 ```
 $ osc get -n hack rc
@@ -201,7 +202,7 @@ c720dbe6d3bc        openshift/hello-openshift:latest   "/hello-openshift"     6 
 Now, try stopping one of the containers using the container ID from the command above:
 `$ docker stop cf8091f8693b`
 
-Wait a few seconds and check again:
+Wait a few seconds and check again, the Replication Controller has recreated the Pod:
 
 ```
 $ docker ps -l
@@ -223,7 +224,7 @@ $ docker kill 880bf49b5d86
 Remember the service is available at 172.30.17.186:27017
 
 ```
-$ curl 172.30.17.186:27017
+$ curl $SERVICE_IP:27017
 Hello OpenShift!
 ```
 
