@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://docs.docker.com/reference/builder/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+  <meta name="docker_version" content="1.5.0">
+  <meta name="docker_git_branch" content="pushme">
+  <meta name="docker_git_commit" content="1428b71">
+  <meta name="docker_build_date" content="Thu Mar 26 03:53:37 UTC 2015">
+
+  <meta name="description" content="Dockerfiles use a simple DSL which allows you to automate the steps you would normally manually take to create an image.">
+  <meta name="keywords" content="builder, docker, Dockerfile, automation, image creation">
+  
+  <link rel="canonical" href="./Dockerfile - Docker Documentation_files/Dockerfile - Docker Documentation.html">
+  <link href="https://docs.docker.com/css/bootstrap-custom.css" rel="stylesheet">
+  <link href="https://docs.docker.com/css/main.css" rel="stylesheet">
+  <link href="https://docs.docker.com/css/prettify-1.0.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./Dockerfile - Docker Documentation_files/dockerfile_tutorial.css">
+  <link href="https://docs.docker.com/tipuesearch/tipuesearch.css" rel="stylesheet">
+  <link href="https://docs.docker.com/css/docs.css" rel="stylesheet">
+  <link rel="shortcut icon" href="https://docs.docker.com/img/favicon.png">
+  <title>Dockerfile - Docker Documentation</title>
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+  
+  <script type="text/javascript" src="./Dockerfile - Docker Documentation_files/pd.js"></script><script type="text/javascript" async="" src="./Dockerfile - Docker Documentation_files/linkid.js"></script><script async="" src="./Dockerfile - Docker Documentation_files/analytics.js"></script><script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-6096819-11', 'docker.com');
+  ga('require', 'linkid', 'linkid.js');
+  ga('send', 'pageview', {
+   'page': location.pathname + location.search  + location.hash,
+  });
+  </script>
+  
+<script type="text/javascript" src="./Dockerfile - Docker Documentation_files/analytics"></script><style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+<body>
+
+<div id="topmostnav" class="topmostnav_loggedout navbar navbar-static-top">
+  <div class="container">
+    <a href="https://docs.docker.com/" title="Docker Docs Home"><div class="brand logo"><img src="./Dockerfile - Docker Documentation_files/docker-logo-loggedin.png"> </div></a>
+    <form id="nav_search" class="navbar-index-search pull-right" action="https://docs.docker.com/jsearch/">
+      <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+      <input name="q" id="tipue_search_input" type="text" class="search_input search-query ui-autocomplete-input" placeholder="Search the Docs" autocomplete="off">
+    </form>
+    <ul class="nav">
+      <li class=""><a href="http://www.docker.com/whatisdocker/" title="What is Docker">What is Docker?</a></li>
+      <li class=""><a href="http://www.docker.com/resources/usecases/" title="Use Cases">Use Cases</a></li>
+      <li class=""><a href="http://www.docker.com/tryit/" title="Try It!">Try It!</a></li>
+      <li><a href="https://registry.hub.docker.com/" title="Browse">Browse</a></li>
+    </ul>
+    <div id="usernav" class="pull-right">
+      <a href="https://hub.docker.com/account/login" class="btn nav-button2" title="Lg In">Log In</a>
+      <a href="https://hub.docker.com/account/signup" class="btn nav-button1" title="Sign Up">Sign Up</a>
+    </div>
+  </div>
+</div>
+<div id="topmostnav" class="topmostnav_loggedin navbar navbar-static-top" style="display: none;">
+  <div class="container">
+    <a href="https://docs.docker.com/" title="Docker Docs Home"><div class="brand logo"><img src="./Dockerfile - Docker Documentation_files/docker-logo-loggedin.png"> </div></a>
+    <form id="nav_search" class="navbar-index-search pull-right" action="https://docs.docker.com/jsearch/">
+      <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+      <input name="q" id="tipue_search_input" type="text" class="search_input search-query ui-autocomplete-input" placeholder="Search the Docs" autocomplete="off">
+    </form>
+    <ul class="nav">
+      <li><a href="https://registry.hub.docker.com/" title="Browse Repos">Browse Repos</a></li>
+      <li class="active"><a href="http://docs.docker.com/" title="Documentation">Documentation</a></li>
+      <li><a href="http://www.docker.com/community/participate/" title="Community">Community</a></li>
+      <li><a href="http://www.docker.com/resources/help/" title="Help">Help</a></li>
+    </ul>
+    <div id="usernav" class="pull-right">
+      <ul class="nav user">
+        <li class="dropdown">
+          <a id="logged-in-header-username" class="dropdown-toggle" data-toggle="dropdown" href="https://docs.docker.com/reference/builder/#">
+            <img class="profile" src="" alt="profile picture">
+          </a>
+          <ul class="dropdown-menu pull-right">
+            <li><a href="https://hub.docker.com/">View Profile</a></li>
+            <li><a href="https://hub.docker.com/account/settings/">Settings</a></li>
+            <li><a href="https://hub.docker.com/repos/">My Repositories</a></li>
+            <li><a href="https://hub.docker.com/plans/billing-info">Billing</a></li>
+            <li><a href="https://hub.docker.com/account/logout/?next=/">Log out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="wrap">
+  <nav id="nav_menu" class="clearfix navbar navbar-default navbar-static-top affix" role="navigation">
+  <div id="docsnav">
+    <ul id="main-nav" class="pull-left">
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/">About</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/">Docker</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/release-notes/">Release Notes</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/introduction/understanding-docker/">Understanding Docker</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/installation/ubuntulinux/">Installation</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/installation/ubuntulinux/">Ubuntu</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/mac/">Mac OS X</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/windows/">Microsoft Windows</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/amazon/">Amazon EC2</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/archlinux/">Arch Linux</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/binaries/">Binaries</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/centos/">CentOS</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/cruxlinux/">CRUX Linux</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/debian/">Debian</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/fedora/">Fedora</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/frugalware/">FrugalWare</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/google/">Google Cloud Platform</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/gentoolinux/">Gentoo</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/softlayer/">IBM Softlayer</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/rackspace/">Rackspace Cloud</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/rhel/">Red Hat Enterprise Linux</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/oracle/">Oracle Linux</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/installation/SUSE/">SUSE</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/install/">Docker Compose</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/userguide/">User Guide</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/">The Docker User Guide</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockerhub/">Getting Started with Docker Hub</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockerizing/">Dockerizing Applications</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/usingdocker/">Working with Containers</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockerimages/">Working with Docker Images</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockerlinks/">Linking containers together</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockervolumes/">Managing data in containers</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/userguide/dockerrepos/">Working with Docker Hub</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/">Docker Compose</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/machine/">Docker Machine</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/swarm/">Docker Swarm</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/docker-hub/">Docker Hub</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/docker-hub/">Docker Hub</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/docker-hub/accounts/">Accounts</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/docker-hub/repos/">Repositories</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/docker-hub/builds/">Automated Builds</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/docker-hub/official_repos/">Official Repo Guidelines</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/examples/nodejs_web_app/">Examples</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/examples/nodejs_web_app/">Dockerizing a Node.js web application</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/mongodb/">Dockerizing MongoDB</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/running_redis_service/">Dockerizing a Redis service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/postgresql_service/">Dockerizing a PostgreSQL service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/running_riak_service/">Dockerizing a Riak service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/running_ssh_service/">Dockerizing an SSH service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/couchdb_data_volumes/">Dockerizing a CouchDB service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/examples/apt-cacher-ng/">Dockerizing an Apt-Cacher-ng service</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/django/">Getting started with Compose and Django</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/rails/">Getting started with Compose and Rails</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/wordpress/">Getting started with Compose and Wordpress</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/articles/basics/">Articles</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/articles/basics/">Docker basics</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/networking/">Advanced networking</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/security/">Security</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/https/">Running Docker with HTTPS</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/registry_mirror/">Run a local registry mirror</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/host_integration/">Automatically starting containers</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/baseimages/">Creating a base image</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/dockerfile_best-practices/">Best practices for writing Dockerfiles</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/certificates/">Using certificates for repository client verification</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/using_supervisord/">Using Supervisor</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/cfengine_process_management/">Process management with CFEngine</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/puppet/">Using Puppet</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/chef/">Using Chef</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/dsc/">Using PowerShell DSC</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/ambassador_pattern_linking/">Cross-Host linking using ambassador containers</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/runmetrics/">Runtime metrics</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/b2d_volume_resize/">Increasing a Boot2Docker volume</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/articles/systemd/">Controlling and configuring Docker using Systemd</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left active">
+        
+        <a href="https://docs.docker.com/reference/commandline/cli/">Reference</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/reference/commandline/cli/">Command line</a>
+          </li>
+        
+          <li class="active">
+            <a href="./Dockerfile - Docker Documentation_files/Dockerfile - Docker Documentation.html">Dockerfile</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/faq/">FAQ</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/run/">Run Reference</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/cli/">Compose command line</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/yml/">Compose yml</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/env/">Compose ENV variables</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/compose/completion/">Compose commandline completion</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/swarm/discovery/">Swarm discovery</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/swarm/scheduler/strategy/">Swarm strategies</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/swarm/scheduler/filter/">Swarm filters</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/swarm/API/">Swarm API</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/docker-io_api/">Docker Hub API</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/registry_api/">Docker Registry API</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/registry_api_client_libraries/">Docker Registry API Client Libraries</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/hub_registry_spec/">Docker Hub and Registry Spec</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/docker_remote_api/">Docker Remote API</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/docker_remote_api_v1.17/">Docker Remote API v1.17</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/docker_remote_api_v1.16/">Docker Remote API v1.16</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/remote_api_client_libraries/">Docker Remote API Client Libraries</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/reference/api/docker_io_accounts_api/">Docker Hub Accounts API</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+      
+      <li class="dd_menu pull-left">
+        
+        <a href="https://docs.docker.com/project/who-written-for/">Contributor Guide</a>
+        
+        <ul class="dd_submenu" style="max-height: 601px;">
+        
+          <li>
+            <a href="https://docs.docker.com/project/who-written-for/">README first</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/software-required/">Get required software</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/set-up-git/">Configure Git for contributing</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/set-up-dev-env/">Work with a development container</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/test-and-docs/">Run tests and test documentation</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/make-a-contribution/">Understand contribution workflow</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/find-an-issue/">Find an issue</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/work-issue/">Work on an issue</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/create-pr/">Create a pull request</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/review-pr/">Participate in the PR review</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/advanced-contributing/">Advanced contributing</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/get-help/">Where to get help</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/coding-style/">Coding style guide</a>
+          </li>
+        
+          <li>
+            <a href="https://docs.docker.com/project/doc-style/">Documentation style guide</a>
+          </li>
+        
+        </ul>
+      </li>
+      
+      
+    </ul>
+  </div>
+</nav>
+  <div id="content" class="container" style="min-height: 252px;">
+    <div class="row">
+
+      <div class="span3" id="leftnav">
+        <div id="toc_table">
+          <ul class="nav nav-tabs nav-stacked">
+            
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#usage">Usage</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#format">Format</a>
+      <ul>
+    
+      <li class=""><a href="https://docs.docker.com/reference/builder/#environment-replacement">Environment Replacement</a></li>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#the-dockerignore-file">The .dockerignore file</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#from">FROM</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#maintainer">MAINTAINER</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#run">RUN</a>
+      <ul>
+    
+      <li class=""><a href="https://docs.docker.com/reference/builder/#known-issues-run">Known Issues (RUN)</a></li>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#cmd">CMD</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#expose">EXPOSE</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#env">ENV</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#add">ADD</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#copy">COPY</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#entrypoint">ENTRYPOINT</a>
+      <ul>
+    
+      <li class=""><a href="https://docs.docker.com/reference/builder/#exec-form-entrypoint-example">Exec form ENTRYPOINT example</a></li>
+    
+      <li class=""><a href="https://docs.docker.com/reference/builder/#shell-form-entrypoint-example">Shell form ENTRYPOINT example</a></li>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#volume">VOLUME</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#user">USER</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class="active"><a href="https://docs.docker.com/reference/builder/#workdir">WORKDIR</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#onbuild">ONBUILD</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+    <li class=""><a href="https://docs.docker.com/reference/builder/#dockerfile-examples">Dockerfile Examples</a>
+      <ul>
+    
+      </ul>
+    </li>
+  
+
+          </ul>
+        </div>
+      </div>
+      <div class="span9 content-body">
+
+        
+
+        <div id="versionnav" class="span3 pull-right">
+          <ul class="nav version pull-right">
+            <li class="dropdown">
+              <a id="document-version-number" class="dropdown-toggle" data-toggle="dropdown" href="https://docs.docker.com/reference/builder/#">
+		      Version v1.5
+               (Latest)</a>
+              <ul id="documentation-version-list" class="dropdown-menu pull-right"><li><a class="" href="https://docs.docker.com/v1.5/reference/builder/">Version v1.5</a></li>
+<li><a class="" href="https://docs.docker.com/v1.4/reference/builder/">Version v1.4</a></li>
+<li><a class="" href="https://docs.docker.com/v1.3/reference/builder/">Version v1.3</a></li>
+<li><a class="" href="https://docs.docker.com/v1.2/reference/builder/">Version v1.2</a></li>
+<li><a class="" href="https://docs.docker.com/v1.1/reference/builder/">Version v1.1</a></li>
+<li><a class="" href="https://docs.docker.com/v1.0/reference/builder/">Version v1.0</a></li>
+
+
+		<li role="presentation" class="divider"></li>
+		<li> <a class="home-link3 tertiary-nav" href="https://github.com/docker/docker/blob/master/docs/sources/reference/builder.md">Edit on GitHub</a></li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <h1 id="dockerfile-reference">Dockerfile Reference</h1>
+<p><strong>Docker can build images automatically</strong> by reading the instructions
+from a <code>Dockerfile</code>. A <code>Dockerfile</code> is a text document that contains all
+the commands you would normally execute manually in order to build a
+Docker image. By calling <code>docker build</code> from your terminal, you can have
+Docker build your image step by step, executing the instructions
+successively.</p>
+<p>This page discusses the specifics of all the instructions you can use in your
+<code>Dockerfile</code>. To further help you write a clear, readable, maintainable
+<code>Dockerfile</code>, we've also written a <a href="https://docs.docker.com/articles/dockerfile_best-practices"><code>Dockerfile</code> Best Practices
+guide</a>. Lastly, you can test your
+Dockerfile knowledge with the <a href="https://docs.docker.com/userguide/level1">Dockerfile tutorial</a>.</p>
+<h2 id="usage">Usage</h2>
+<p>To <a href="https://docs.docker.com/reference/commandline/cli/#build"><em>build</em></a> an image from a source repository,
+create a description file called <code>Dockerfile</code> at the root of your repository.
+This file will describe the steps to assemble the image.</p>
+<p>Then call <code>docker build</code> with the path of your source repository as the argument
+(for example, <code>.</code>):</p>
+<pre class="prettyprint well"><code><span class="pln">$ sudo docker build </span><span class="pun">.</span></code></pre>
+<p>The path to the source repository defines where to find the <em>context</em> of
+the build. The build is run by the Docker daemon, not by the CLI, so the
+whole context must be transferred to the daemon. The Docker CLI reports
+"Sending build context to Docker daemon" when the context is sent to the daemon.</p>
+<blockquote>
+<p><strong>Warning</strong>
+Avoid using your root directory, <code>/</code>, as the root of the source repository. The 
+<code>docker build</code> command will use whatever directory contains the Dockerfile as the build
+context (including all of its subdirectories). The build context will be sent to the
+Docker daemon before building the image, which means if you use <code>/</code> as the source
+repository, the entire contents of your hard drive will get sent to the daemon (and
+thus to the machine running the daemon). You probably don't want that.</p>
+</blockquote>
+<p>In most cases, it's best to put each Dockerfile in an empty directory, and then add only
+the files needed for building that Dockerfile to that directory. To further speed up the
+build, you can exclude files and directories by adding a <code>.dockerignore</code> file to the same
+directory.</p>
+<p>You can specify a repository and tag at which to save the new image if
+the build succeeds:</p>
+<pre class="prettyprint well"><code><span class="pln">$ sudo docker build </span><span class="pun">-</span><span class="pln">t shykes</span><span class="pun">/</span><span class="pln">myapp </span><span class="pun">.</span></code></pre>
+<p>The Docker daemon will run your steps one-by-one, committing the result
+to a new image if necessary, before finally outputting the ID of your
+new image. The Docker daemon will automatically clean up the context you
+sent.</p>
+<p>Note that each instruction is run independently, and causes a new image
+to be created - so <code>RUN cd /tmp</code> will not have any effect on the next
+instructions.</p>
+<p>Whenever possible, Docker will re-use the intermediate images,
+accelerating <code>docker build</code> significantly (indicated by <code>Using cache</code> -
+see the <a href="https://docs.docker.com/articles/dockerfile_best-practices/#build-cache"><code>Dockerfile</code> Best Practices
+guide</a> for more information):</p>
+<pre class="prettyprint well"><code><span class="pln">$ sudo docker build </span><span class="pun">-</span><span class="pln">t </span><span class="typ">SvenDowideit</span><span class="pun">/</span><span class="pln">ambassador </span><span class="pun">.</span><span class="pln">
+</span><span class="typ">Uploading</span><span class="pln"> context </span><span class="lit">10.24</span><span class="pln"> kB
+</span><span class="typ">Uploading</span><span class="pln"> context
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> FROM docker</span><span class="pun">-</span><span class="pln">ut
+ </span><span class="pun">---&gt;</span><span class="pln"> cbba202fe96b
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> MAINTAINER </span><span class="typ">SvenDowideit@home</span><span class="pun">.</span><span class="pln">org</span><span class="pun">.</span><span class="pln">au
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="typ">Using</span><span class="pln"> cache
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">51182097be13</span><span class="pln">
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">3</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> CMD env </span><span class="pun">|</span><span class="pln"> grep _TCP</span><span class="pun">=</span><span class="pln"> </span><span class="pun">|</span><span class="pln"> sed </span><span class="str">'s/.*_PORT_\([0-9]*\)_TCP=tcp:\/\/\(.*\):\(.*\)/socat TCP4-LISTEN:\1,fork,reuseaddr TCP4:\2:\3 \&amp;/'</span><span class="pln">  </span><span class="pun">|</span><span class="pln"> sh </span><span class="pun">&amp;&amp;</span><span class="pln"> top
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="typ">Using</span><span class="pln"> cache
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">1a5ffc17324d</span><span class="pln">
+</span><span class="typ">Successfully</span><span class="pln"> built </span><span class="lit">1a5ffc17324d</span></code></pre>
+<p>When you're done with your build, you're ready to look into <a href="https://docs.docker.com/userguide/dockerrepos/#contributing-to-docker-hub"><em>Pushing a
+repository to its registry</em></a>.</p>
+<h2 id="format">Format</h2>
+<p>Here is the format of the <code>Dockerfile</code>:</p>
+<pre class="prettyprint well"><code><span class="com"># Comment</span><span class="pln">
+INSTRUCTION arguments</span></code></pre>
+<p>The Instruction is not case-sensitive, however convention is for them to
+be UPPERCASE in order to distinguish them from arguments more easily.</p>
+<p>Docker runs the instructions in a <code>Dockerfile</code> in order. <strong>The
+first instruction must be `FROM`</strong> in order to specify the <a href="https://docs.docker.com/terms/image/#base-image"><em>Base
+Image</em></a> from which you are building.</p>
+<p>Docker will treat lines that <em>begin</em> with <code>#</code> as a
+comment. A <code>#</code> marker anywhere else in the line will
+be treated as an argument. This allows statements like:</p>
+<pre class="prettyprint well"><code><span class="com"># Comment</span><span class="pln">
+RUN echo </span><span class="str">'we are running some # of cool things'</span></code></pre>
+<p>Here is the set of instructions you can use in a <code>Dockerfile</code> for building
+images.</p>
+<h3 id="environment-replacement">Environment Replacement</h3>
+<blockquote>
+<p><strong>Note</strong>: prior to 1.3, <code>Dockerfile</code> environment variables were handled
+similarly, in that they would be replaced as described below. However, there
+was no formal definition on as to which instructions handled environment
+replacement at the time. After 1.3 this behavior will be preserved and
+canonical.</p>
+</blockquote>
+<p>Environment variables (declared with <a href="https://docs.docker.com/reference/builder/#env">the <code>ENV</code> statement</a>) can also be used in
+certain instructions as variables to be interpreted by the <code>Dockerfile</code>. Escapes
+are also handled for including variable-like syntax into a statement literally.</p>
+<p>Environment variables are notated in the <code>Dockerfile</code> either with
+<code>$variable_name</code> or <code>${variable_name}</code>. They are treated equivalently and the
+brace syntax is typically used to address issues with variable names with no
+whitespace, like <code>${foo}_bar</code>.</p>
+<p>Escaping is possible by adding a <code>\</code> before the variable: <code>\$foo</code> or <code>\${foo}</code>,
+for example, will translate to <code>$foo</code> and <code>${foo}</code> literals respectively.</p>
+<p>Example (parsed representation is displayed after the <code>#</code>):</p>
+<pre class="prettyprint well"><code><span class="pln">FROM busybox
+ENV foo </span><span class="pun">/</span><span class="pln">bar
+WORKDIR $</span><span class="pun">{</span><span class="pln">foo</span><span class="pun">}</span><span class="pln">   </span><span class="com"># WORKDIR /bar</span><span class="pln">
+ADD </span><span class="pun">.</span><span class="pln"> $foo       </span><span class="com"># ADD . /bar</span><span class="pln">
+COPY \$foo </span><span class="pun">/</span><span class="pln">quux </span><span class="com"># COPY $foo /quux</span></code></pre>
+<p>The instructions that handle environment variables in the <code>Dockerfile</code> are:</p>
+<ul>
+<li><code>ENV</code></li>
+<li><code>ADD</code></li>
+<li><code>COPY</code></li>
+<li><code>WORKDIR</code></li>
+<li><code>EXPOSE</code></li>
+<li><code>VOLUME</code></li>
+<li><code>USER</code></li>
+</ul>
+<p><code>ONBUILD</code> instructions are <strong>NOT</strong> supported for environment replacement, even
+the instructions above.</p>
+<h2 id="the-dockerignore-file">The <code>.dockerignore</code> file</h2>
+<p>If a file named <code>.dockerignore</code> exists in the source repository, then it
+is interpreted as a newline-separated list of exclusion patterns.
+Exclusion patterns match files or directories relative to the source repository
+that will be excluded from the context. Globbing is done using Go's
+<a href="http://golang.org/pkg/path/filepath#Match">filepath.Match</a> rules.</p>
+<blockquote>
+<p><strong>Note</strong>:
+The <code>.dockerignore</code> file can even be used to ignore the <code>Dockerfile</code> and
+<code>.dockerignore</code> files. This might be useful if you are copying files from
+the root of the build context into your new containter but do not want to 
+include the <code>Dockerfile</code> or <code>.dockerignore</code> files (e.g. <code>ADD . /someDir/</code>).</p>
+</blockquote>
+<p>The following example shows the use of the <code>.dockerignore</code> file to exclude the
+<code>.git</code> directory from the context. Its effect can be seen in the changed size of
+the uploaded context.</p>
+<pre class="prettyprint well"><code><span class="pln">$ sudo docker build </span><span class="pun">.</span><span class="pln">
+</span><span class="typ">Uploading</span><span class="pln"> context </span><span class="lit">18.829</span><span class="pln"> MB
+</span><span class="typ">Uploading</span><span class="pln"> context
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">0</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> FROM busybox
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">769b9341d937</span><span class="pln">
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> CMD echo </span><span class="typ">Hello</span><span class="pln"> </span><span class="typ">World</span><span class="pln">
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="typ">Using</span><span class="pln"> cache
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">99cc1ad10469</span><span class="pln">
+</span><span class="typ">Successfully</span><span class="pln"> built </span><span class="lit">99cc1ad10469</span><span class="pln">
+$ echo </span><span class="str">".git"</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">.</span><span class="pln">dockerignore
+$ sudo docker build </span><span class="pun">.</span><span class="pln">
+</span><span class="typ">Uploading</span><span class="pln"> context  </span><span class="lit">6.76</span><span class="pln"> MB
+</span><span class="typ">Uploading</span><span class="pln"> context
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">0</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> FROM busybox
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">769b9341d937</span><span class="pln">
+</span><span class="typ">Step</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> CMD echo </span><span class="typ">Hello</span><span class="pln"> </span><span class="typ">World</span><span class="pln">
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="typ">Using</span><span class="pln"> cache
+ </span><span class="pun">---&gt;</span><span class="pln"> </span><span class="lit">99cc1ad10469</span><span class="pln">
+</span><span class="typ">Successfully</span><span class="pln"> built </span><span class="lit">99cc1ad10469</span></code></pre>
+<h2 id="from">FROM</h2>
+<pre class="prettyprint well"><code><span class="pln">FROM </span><span class="str">&lt;image&gt;</span></code></pre>
+<p>Or</p>
+<pre class="prettyprint well"><code><span class="pln">FROM </span><span class="str">&lt;image&gt;</span><span class="pun">:&lt;</span><span class="pln">tag</span><span class="pun">&gt;</span></code></pre>
+<p>The <code>FROM</code> instruction sets the <a href="https://docs.docker.com/terms/image/#base-image"><em>Base Image</em></a>
+for subsequent instructions. As such, a valid <code>Dockerfile</code> must have <code>FROM</code> as
+its first instruction. The image can be any valid image – it is especially easy
+to start by <strong>pulling an image</strong> from the <a href="https://docs.docker.com/userguide/dockerrepos"><em>Public Repositories</em></a>.</p>
+<p><code>FROM</code> must be the first non-comment instruction in the <code>Dockerfile</code>.</p>
+<p><code>FROM</code> can appear multiple times within a single <code>Dockerfile</code> in order to create
+multiple images. Simply make a note of the last image ID output by the commit
+before each new <code>FROM</code> command.</p>
+<p>If no <code>tag</code> is given to the <code>FROM</code> instruction, <code>latest</code> is assumed. If the
+used tag does not exist, an error will be returned.</p>
+<h2 id="maintainer">MAINTAINER</h2>
+<pre class="prettyprint well"><code><span class="pln">MAINTAINER </span><span class="str">&lt;name&gt;</span></code></pre>
+<p>The <code>MAINTAINER</code> instruction allows you to set the <em>Author</em> field of the
+generated images.</p>
+<h2 id="run">RUN</h2>
+<p>RUN has 2 forms:</p>
+<ul>
+<li><code>RUN &lt;command&gt;</code> (the command is run in a shell - <code>/bin/sh -c</code> - <em>shell</em> form)</li>
+<li><code>RUN ["executable", "param1", "param2"]</code> (<em>exec</em> form)</li>
+</ul>
+<p>The <code>RUN</code> instruction will execute any commands in a new layer on top of the
+current image and commit the results. The resulting committed image will be
+used for the next step in the <code>Dockerfile</code>.</p>
+<p>Layering <code>RUN</code> instructions and generating commits conforms to the core
+concepts of Docker where commits are cheap and containers can be created from
+any point in an image's history, much like source control.</p>
+<p>The <em>exec</em> form makes it possible to avoid shell string munging, and to <code>RUN</code>
+commands using a base image that does not contain <code>/bin/sh</code>.</p>
+<blockquote>
+<p><strong>Note</strong>:
+To use a different shell, other than '/bin/sh', use the <em>exec</em> form
+passing in the desired shell. For example,
+<code>RUN ["/bin/bash", "-c", "echo hello"]</code></p>
+<p><strong>Note</strong>:
+The <em>exec</em> form is parsed as a JSON array, which means that
+you must use double-quotes (") around words not single-quotes (').</p>
+<p><strong>Note</strong>:
+Unlike the <em>shell</em> form, the <em>exec</em> form does not invoke a command shell.
+This means that normal shell processing does not happen. For example,
+<code>RUN [ "echo", "$HOME" ]</code> will not do variable substitution on <code>$HOME</code>.
+If you want shell processing then either use the <em>shell</em> form or execute 
+a shell directly, for example: <code>RUN [ "sh", "-c", "echo", "$HOME" ]</code>.</p>
+</blockquote>
+<p>The cache for <code>RUN</code> instructions isn't invalidated automatically during
+the next build. The cache for an instruction like 
+<code>RUN apt-get dist-upgrade -y</code> will be reused during the next build.  The 
+cache for <code>RUN</code> instructions can be invalidated by using the <code>--no-cache</code> 
+flag, for example <code>docker build --no-cache</code>.</p>
+<p>See the <a href="https://docs.docker.com/articles/dockerfile_best-practices/#build-cache"><code>Dockerfile</code> Best Practices
+guide</a> for more information.</p>
+<p>The cache for <code>RUN</code> instructions can be invalidated by <code>ADD</code> instructions. See
+<a href="https://docs.docker.com/reference/builder/#add">below</a> for details.</p>
+<h3 id="known-issues-run">Known Issues (RUN)</h3>
+<ul>
+<li><a href="https://github.com/docker/docker/issues/783">Issue 783</a> is about file
+  permissions problems that can occur when using the AUFS file system. You
+  might notice it during an attempt to <code>rm</code> a file, for example. The issue
+  describes a workaround.</li>
+</ul>
+<h2 id="cmd">CMD</h2>
+<p>The <code>CMD</code> instruction has three forms:</p>
+<ul>
+<li><code>CMD ["executable","param1","param2"]</code> (<em>exec</em> form, this is the preferred form)</li>
+<li><code>CMD ["param1","param2"]</code> (as <em>default parameters to ENTRYPOINT</em>)</li>
+<li><code>CMD command param1 param2</code> (<em>shell</em> form)</li>
+</ul>
+<p>There can only be one <code>CMD</code> instruction in a <code>Dockerfile</code>. If you list more than one <code>CMD</code>
+then only the last <code>CMD</code> will take effect.</p>
+<p><strong>The main purpose of a <code>CMD</code> is to provide defaults for an executing
+container.</strong> These defaults can include an executable, or they can omit
+the executable, in which case you must specify an <code>ENTRYPOINT</code>
+instruction as well.</p>
+<blockquote>
+<p><strong>Note</strong>:
+If <code>CMD</code> is used to provide default arguments for the <code>ENTRYPOINT</code> 
+instruction, both the <code>CMD</code> and <code>ENTRYPOINT</code> instructions should be specified 
+with the JSON array format.</p>
+<p><strong>Note</strong>:
+The <em>exec</em> form is parsed as a JSON array, which means that
+you must use double-quotes (") around words not single-quotes (').</p>
+<p><strong>Note</strong>:
+Unlike the <em>shell</em> form, the <em>exec</em> form does not invoke a command shell.
+This means that normal shell processing does not happen. For example,
+<code>CMD [ "echo", "$HOME" ]</code> will not do variable substitution on <code>$HOME</code>.
+If you want shell processing then either use the <em>shell</em> form or execute 
+a shell directly, for example: <code>CMD [ "sh", "-c", "echo", "$HOME" ]</code>.</p>
+</blockquote>
+<p>When used in the shell or exec formats, the <code>CMD</code> instruction sets the command
+to be executed when running the image.</p>
+<p>If you use the <em>shell</em> form of the <code>CMD</code>, then the <code>&lt;command&gt;</code> will execute in
+<code>/bin/sh -c</code>:</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+CMD echo </span><span class="str">"This is a test."</span><span class="pln"> </span><span class="pun">|</span><span class="pln"> wc </span><span class="pun">-</span></code></pre>
+<p>If you want to <strong>run your</strong> <code>&lt;command&gt;</code> <strong>without a shell</strong> then you must
+express the command as a JSON array and give the full path to the executable.
+<strong>This array form is the preferred format of <code>CMD</code>.</strong> Any additional parameters
+must be individually expressed as strings in the array:</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+CMD </span><span class="pun">[</span><span class="str">"/usr/bin/wc"</span><span class="pun">,</span><span class="str">"--help"</span><span class="pun">]</span></code></pre>
+<p>If you would like your container to run the same executable every time, then
+you should consider using <code>ENTRYPOINT</code> in combination with <code>CMD</code>. See
+<a href="https://docs.docker.com/reference/builder/#entrypoint"><em>ENTRYPOINT</em></a>.</p>
+<p>If the user specifies arguments to <code>docker run</code> then they will override the
+default specified in <code>CMD</code>.</p>
+<blockquote>
+<p><strong>Note</strong>:
+don't confuse <code>RUN</code> with <code>CMD</code>. <code>RUN</code> actually runs a command and commits
+the result; <code>CMD</code> does not execute anything at build time, but specifies
+the intended command for the image.</p>
+</blockquote>
+<h2 id="expose">EXPOSE</h2>
+<pre class="prettyprint well"><code><span class="pln">EXPOSE </span><span class="str">&lt;port&gt;</span><span class="pln"> </span><span class="pun">[&lt;</span><span class="pln">port</span><span class="pun">&gt;...]</span></code></pre>
+<p>The <code>EXPOSE</code> instructions informs Docker that the container will listen on the
+specified network ports at runtime. Docker uses this information to interconnect
+containers using links (see the <a href="https://docs.docker.com/userguide/dockerlinks">Docker User
+Guide</a>) and to determine which ports to expose to the
+host when <a href="https://docs.docker.com/reference/run/#expose-incoming-ports">using the -P flag</a>.</p>
+<blockquote>
+<p><strong>Note</strong>:
+<code>EXPOSE</code> doesn't define which ports can be exposed to the host or make ports
+accessible from the host by default. To expose ports to the host, at runtime,
+<a href="https://docs.docker.com/userguide/dockerlinks">use the <code>-p</code> flag</a> or
+<a href="https://docs.docker.com/reference/run/#expose-incoming-ports">the -P flag</a>.</p>
+</blockquote>
+<h2 id="env">ENV</h2>
+<pre class="prettyprint well"><code><span class="pln">ENV </span><span class="str">&lt;key&gt;</span><span class="pln"> </span><span class="str">&lt;value&gt;</span><span class="pln">
+ENV </span><span class="str">&lt;key&gt;</span><span class="pun">=&lt;</span><span class="pln">value</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">...</span></code></pre>
+<p>The <code>ENV</code> instruction sets the environment variable <code>&lt;key&gt;</code> to the value
+<code>&lt;value&gt;</code>. This value will be in the environment of all "descendent" <code>Dockerfile</code>
+commands and can be <a href="https://docs.docker.com/reference/builder/#environment-replacement">replaced inline</a> in many as well.</p>
+<p>The <code>ENV</code> instruction has two forms. The first form, <code>ENV &lt;key&gt; &lt;value&gt;</code>,
+will set a single variable to a value. The entire string after the first
+space will be treated as the <code>&lt;value&gt;</code> - including characters such as 
+spaces and quotes.</p>
+<p>The second form, <code>ENV &lt;key&gt;=&lt;value&gt; ...</code>, allows for multiple variables to 
+be set at one time. Notice that the second form uses the equals sign (=) 
+in the syntax, while the first form does not. Like command line parsing, 
+quotes and backslashes can be used to include spaces within values.</p>
+<p>For example:</p>
+<pre class="prettyprint well"><code><span class="pln">ENV myName</span><span class="pun">=</span><span class="str">"John Doe"</span><span class="pln"> myDog</span><span class="pun">=</span><span class="typ">Rex</span><span class="pln">\ </span><span class="typ">The</span><span class="pln">\ </span><span class="typ">Dog</span><span class="pln"> \
+    myCat</span><span class="pun">=</span><span class="pln">fluffy</span></code></pre>
+<p>and</p>
+<pre class="prettyprint well"><code><span class="pln">ENV myName </span><span class="typ">John</span><span class="pln"> </span><span class="typ">Doe</span><span class="pln">
+ENV myDog </span><span class="typ">Rex</span><span class="pln"> </span><span class="typ">The</span><span class="pln"> </span><span class="typ">Dog</span><span class="pln">
+ENV myCat fluffy</span></code></pre>
+<p>will yield the same net results in the final container, but the first form 
+does it all in one layer.</p>
+<p>The environment variables set using <code>ENV</code> will persist when a container is run
+from the resulting image. You can view the values using <code>docker inspect</code>, and
+change them using <code>docker run --env &lt;key&gt;=&lt;value&gt;</code>.</p>
+<blockquote>
+<p><strong>Note</strong>:
+Environment persistence can cause unexpected effects. For example,
+setting <code>ENV DEBIAN_FRONTEND noninteractive</code> may confuse apt-get
+users on a Debian-based image. To set a value for a single command, use
+<code>RUN &lt;key&gt;=&lt;value&gt; &lt;command&gt;</code>.</p>
+</blockquote>
+<h2 id="add">ADD</h2>
+<p>ADD has two forms:</p>
+<ul>
+<li><code>ADD &lt;src&gt;... &lt;dest&gt;</code></li>
+<li><code>ADD ["&lt;src&gt;"... "&lt;dest&gt;"]</code> (this form is required for paths containing
+whitespace)</li>
+</ul>
+<p>The <code>ADD</code> instruction copies new files, directories or remote file URLs from <code>&lt;src&gt;</code>
+and adds them to the filesystem of the container at the path <code>&lt;dest&gt;</code>.  </p>
+<p>Multiple <code>&lt;src&gt;</code> resource may be specified but if they are files or 
+directories then they must be relative to the source directory that is 
+being built (the context of the build).</p>
+<p>Each <code>&lt;src&gt;</code> may contain wildcards and matching will be done using Go's
+<a href="http://golang.org/pkg/path/filepath#Match">filepath.Match</a> rules.
+For most command line uses this should act as expected, for example:</p>
+<pre class="prettyprint well"><code><span class="pln">ADD hom</span><span class="pun">*</span><span class="pln"> </span><span class="str">/mydir/</span><span class="pln">        </span><span class="com"># adds all files starting with "hom"</span><span class="pln">
+ADD hom</span><span class="pun">?.</span><span class="pln">txt </span><span class="pun">/</span><span class="pln">mydir</span><span class="pun">/</span><span class="pln">    </span><span class="com"># ? is replaced with any single character</span></code></pre>
+<p>The <code>&lt;dest&gt;</code> is an absolute path, or a path relative to <code>WORKDIR</code>, into which
+the source will be copied inside the destination container.</p>
+<pre class="prettyprint well"><code><span class="pln">ADD test aDir</span><span class="pun">/</span><span class="pln">          </span><span class="com"># adds "test" to `WORKDIR`/aDir/</span></code></pre>
+<p>All new files and directories are created with a UID and GID of 0.</p>
+<p>In the case where <code>&lt;src&gt;</code> is a remote file URL, the destination will
+have permissions of 600. If the remote file being retrieved has an HTTP
+<code>Last-Modified</code> header, the timestamp from that header will be used
+to set the <code>mtime</code> on the destination file. Then, like any other file
+processed during an <code>ADD</code>, <code>mtime</code> will be included in the determination
+of whether or not the file has changed and the cache should be updated.</p>
+<blockquote>
+<p><strong>Note</strong>:
+If you build by passing a <code>Dockerfile</code> through STDIN (<code>docker
+build - &lt; somefile</code>), there is no build context, so the <code>Dockerfile</code>
+can only contain a URL based <code>ADD</code> instruction. You can also pass a
+compressed archive through STDIN: (<code>docker build - &lt; archive.tar.gz</code>),
+the <code>Dockerfile</code> at the root of the archive and the rest of the
+archive will get used at the context of the build.</p>
+<p><strong>Note</strong>:
+If your URL files are protected using authentication, you
+will need to use <code>RUN wget</code>, <code>RUN curl</code> or use another tool from
+within the container as the <code>ADD</code> instruction does not support
+authentication.</p>
+<p><strong>Note</strong>:
+The first encountered <code>ADD</code> instruction will invalidate the cache for all
+following instructions from the Dockerfile if the contents of <code>&lt;src&gt;</code> have
+changed. This includes invalidating the cache for <code>RUN</code> instructions.
+See the <a href="https://docs.docker.com/articles/dockerfile_best-practices/#build-cache"><code>Dockerfile</code> Best Practices
+guide</a> for more information.</p>
+</blockquote>
+<p>The copy obeys the following rules:</p>
+<ul>
+<li>
+<p>The <code>&lt;src&gt;</code> path must be inside the <em>context</em> of the build;
+  you cannot <code>ADD ../something /something</code>, because the first step of a
+  <code>docker build</code> is to send the context directory (and subdirectories) to the
+  docker daemon.</p>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is a URL and <code>&lt;dest&gt;</code> does not end with a trailing slash, then a
+  file is downloaded from the URL and copied to <code>&lt;dest&gt;</code>.</p>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is a URL and <code>&lt;dest&gt;</code> does end with a trailing slash, then the
+  filename is inferred from the URL and the file is downloaded to
+  <code>&lt;dest&gt;/&lt;filename&gt;</code>. For instance, <code>ADD http://example.com/foobar /</code> would
+  create the file <code>/foobar</code>. The URL must have a nontrivial path so that an
+  appropriate filename can be discovered in this case (<code>http://example.com</code>
+  will not work).</p>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is a directory, the entire contents of the directory are copied, 
+  including filesystem metadata. </p>
+<blockquote>
+<p><strong>Note</strong>:
+The directory itself is not copied, just its contents.</p>
+</blockquote>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is a <em>local</em> tar archive in a recognized compression format
+  (identity, gzip, bzip2 or xz) then it is unpacked as a directory. Resources
+  from <em>remote</em> URLs are <strong>not</strong> decompressed. When a directory is copied or
+  unpacked, it has the same behavior as <code>tar -x</code>: the result is the union of:</p>
+<ol>
+<li>Whatever existed at the destination path and</li>
+<li>The contents of the source tree, with conflicts resolved in favor
+   of "2." on a file-by-file basis.</li>
+</ol>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is any other kind of file, it is copied individually along with
+  its metadata. In this case, if <code>&lt;dest&gt;</code> ends with a trailing slash <code>/</code>, it
+  will be considered a directory and the contents of <code>&lt;src&gt;</code> will be written
+  at <code>&lt;dest&gt;/base(&lt;src&gt;)</code>.</p>
+</li>
+<li>
+<p>If multiple <code>&lt;src&gt;</code> resources are specified, either directly or due to the
+  use of a wildcard, then <code>&lt;dest&gt;</code> must be a directory, and it must end with 
+  a slash <code>/</code>.</p>
+</li>
+<li>
+<p>If <code>&lt;dest&gt;</code> does not end with a trailing slash, it will be considered a
+  regular file and the contents of <code>&lt;src&gt;</code> will be written at <code>&lt;dest&gt;</code>.</p>
+</li>
+<li>
+<p>If <code>&lt;dest&gt;</code> doesn't exist, it is created along with all missing directories
+  in its path.</p>
+</li>
+</ul>
+<h2 id="copy">COPY</h2>
+<p>COPY has two forms:</p>
+<ul>
+<li><code>COPY &lt;src&gt;... &lt;dest&gt;</code></li>
+<li><code>COPY ["&lt;src&gt;"... "&lt;dest&gt;"]</code> (this form is required for paths containing
+whitespace)</li>
+</ul>
+<p>The <code>COPY</code> instruction copies new files or directories from <code>&lt;src&gt;</code>
+and adds them to the filesystem of the container at the path <code>&lt;dest&gt;</code>.</p>
+<p>Multiple <code>&lt;src&gt;</code> resource may be specified but they must be relative
+to the source directory that is being built (the context of the build).</p>
+<p>Each <code>&lt;src&gt;</code> may contain wildcards and matching will be done using Go's
+<a href="http://golang.org/pkg/path/filepath#Match">filepath.Match</a> rules.
+For most command line uses this should act as expected, for example:</p>
+<pre class="prettyprint well"><code><span class="pln">COPY hom</span><span class="pun">*</span><span class="pln"> </span><span class="str">/mydir/</span><span class="pln">        </span><span class="com"># adds all files starting with "hom"</span><span class="pln">
+COPY hom</span><span class="pun">?.</span><span class="pln">txt </span><span class="pun">/</span><span class="pln">mydir</span><span class="pun">/</span><span class="pln">    </span><span class="com"># ? is replaced with any single character</span></code></pre>
+<p>The <code>&lt;dest&gt;</code> is an absolute path, or a path relative to <code>WORKDIR</code>, into which
+the source will be copied inside the destination container.</p>
+<pre class="prettyprint well"><code><span class="pln">COPY test aDir</span><span class="pun">/</span><span class="pln">          </span><span class="com"># adds "test" to `WORKDIR`/aDir/</span></code></pre>
+<p>All new files and directories are created with a UID and GID of 0.</p>
+<blockquote>
+<p><strong>Note</strong>:
+If you build using STDIN (<code>docker build - &lt; somefile</code>), there is no
+build context, so <code>COPY</code> can't be used.</p>
+</blockquote>
+<p>The copy obeys the following rules:</p>
+<ul>
+<li>
+<p>The <code>&lt;src&gt;</code> path must be inside the <em>context</em> of the build;
+  you cannot <code>COPY ../something /something</code>, because the first step of a
+  <code>docker build</code> is to send the context directory (and subdirectories) to the
+  docker daemon.</p>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is a directory, the entire contents of the directory are copied, 
+  including filesystem metadata. </p>
+<blockquote>
+<p><strong>Note</strong>:
+The directory itself is not copied, just its contents.</p>
+</blockquote>
+</li>
+<li>
+<p>If <code>&lt;src&gt;</code> is any other kind of file, it is copied individually along with
+  its metadata. In this case, if <code>&lt;dest&gt;</code> ends with a trailing slash <code>/</code>, it
+  will be considered a directory and the contents of <code>&lt;src&gt;</code> will be written
+  at <code>&lt;dest&gt;/base(&lt;src&gt;)</code>.</p>
+</li>
+<li>
+<p>If multiple <code>&lt;src&gt;</code> resources are specified, either directly or due to the
+  use of a wildcard, then <code>&lt;dest&gt;</code> must be a directory, and it must end with 
+  a slash <code>/</code>.</p>
+</li>
+<li>
+<p>If <code>&lt;dest&gt;</code> does not end with a trailing slash, it will be considered a
+  regular file and the contents of <code>&lt;src&gt;</code> will be written at <code>&lt;dest&gt;</code>.</p>
+</li>
+<li>
+<p>If <code>&lt;dest&gt;</code> doesn't exist, it is created along with all missing directories
+  in its path.</p>
+</li>
+</ul>
+<h2 id="entrypoint">ENTRYPOINT</h2>
+<p>ENTRYPOINT has two forms:</p>
+<ul>
+<li><code>ENTRYPOINT ["executable", "param1", "param2"]</code>
+  (the preferred <em>exec</em> form)</li>
+<li><code>ENTRYPOINT command param1 param2</code>
+  (<em>shell</em> form)</li>
+</ul>
+<p>An <code>ENTRYPOINT</code> allows you to configure a container that will run as an executable.</p>
+<p>For example, the following will start nginx with its default content, listening
+on port 80:</p>
+<pre class="prettyprint well"><code><span class="pln">docker run </span><span class="pun">-</span><span class="pln">i </span><span class="pun">-</span><span class="pln">t </span><span class="pun">--</span><span class="pln">rm </span><span class="pun">-</span><span class="pln">p </span><span class="lit">80</span><span class="pun">:</span><span class="lit">80</span><span class="pln"> nginx</span></code></pre>
+<p>Command line arguments to <code>docker run &lt;image&gt;</code> will be appended after all
+elements in an <em>exec</em> form <code>ENTRYPOINT</code>, and will override all elements specified
+using <code>CMD</code>.
+This allows arguments to be passed to the entry point, i.e., <code>docker run &lt;image&gt; -d</code>
+will pass the <code>-d</code> argument to the entry point. 
+You can override the <code>ENTRYPOINT</code> instruction using the <code>docker run --entrypoint</code>
+flag.</p>
+<p>The <em>shell</em> form prevents any <code>CMD</code> or <code>run</code> command line arguments from being
+used, but has the disadvantage that your <code>ENTRYPOINT</code> will be started as a
+subcommand of <code>/bin/sh -c</code>, which does not pass signals.
+This means that the executable will not be the container's <code>PID 1</code> - and
+will <em>not</em> receive Unix signals - so your executable will not receive a
+<code>SIGTERM</code> from <code>docker stop &lt;container&gt;</code>.</p>
+<p>Only the last <code>ENTRYPOINT</code> instruction in the <code>Dockerfile</code> will have an effect.</p>
+<h3 id="exec-form-entrypoint-example">Exec form ENTRYPOINT example</h3>
+<p>You can use the <em>exec</em> form of <code>ENTRYPOINT</code> to set fairly stable default commands
+and arguments and then use either form of <code>CMD</code> to set additional defaults that
+are more likely to be changed.</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+ENTRYPOINT </span><span class="pun">[</span><span class="str">"top"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-b"</span><span class="pun">]</span><span class="pln">
+CMD </span><span class="pun">[</span><span class="str">"-c"</span><span class="pun">]</span></code></pre>
+<p>When you run the container, you can see that <code>top</code> is the only process:</p>
+<pre class="prettyprint well"><code><span class="pln">$ docker run </span><span class="pun">-</span><span class="pln">it </span><span class="pun">--</span><span class="pln">rm </span><span class="pun">--</span><span class="pln">name test  top </span><span class="pun">-</span><span class="pln">H
+top </span><span class="pun">-</span><span class="pln"> </span><span class="lit">08</span><span class="pun">:</span><span class="lit">25</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> up  </span><span class="lit">7</span><span class="pun">:</span><span class="lit">27</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0</span><span class="pln"> users</span><span class="pun">,</span><span class="pln">  load average</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0.00</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0.01</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0.05</span><span class="pln">
+</span><span class="typ">Threads</span><span class="pun">:</span><span class="pln">   </span><span class="lit">1</span><span class="pln"> total</span><span class="pun">,</span><span class="pln">   </span><span class="lit">1</span><span class="pln"> running</span><span class="pun">,</span><span class="pln">   </span><span class="lit">0</span><span class="pln"> sleeping</span><span class="pun">,</span><span class="pln">   </span><span class="lit">0</span><span class="pln"> stopped</span><span class="pun">,</span><span class="pln">   </span><span class="lit">0</span><span class="pln"> zombie
+</span><span class="pun">%</span><span class="typ">Cpu</span><span class="pun">(</span><span class="pln">s</span><span class="pun">):</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln"> us</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln"> sy</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln"> ni</span><span class="pun">,</span><span class="pln"> </span><span class="lit">99.7</span><span class="pln"> id</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln"> wa</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln"> hi</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln"> si</span><span class="pun">,</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln"> st
+</span><span class="typ">KiB</span><span class="pln"> </span><span class="typ">Mem</span><span class="pun">:</span><span class="pln">   </span><span class="lit">2056668</span><span class="pln"> total</span><span class="pun">,</span><span class="pln">  </span><span class="lit">1616832</span><span class="pln"> used</span><span class="pun">,</span><span class="pln">   </span><span class="lit">439836</span><span class="pln"> free</span><span class="pun">,</span><span class="pln">    </span><span class="lit">99352</span><span class="pln"> buffers
+</span><span class="typ">KiB</span><span class="pln"> </span><span class="typ">Swap</span><span class="pun">:</span><span class="pln">  </span><span class="lit">1441840</span><span class="pln"> total</span><span class="pun">,</span><span class="pln">        </span><span class="lit">0</span><span class="pln"> used</span><span class="pun">,</span><span class="pln">  </span><span class="lit">1441840</span><span class="pln"> free</span><span class="pun">.</span><span class="pln">  </span><span class="lit">1324440</span><span class="pln"> cached </span><span class="typ">Mem</span><span class="pln">
+
+  PID USER      PR  NI    VIRT    RES    SHR S </span><span class="pun">%</span><span class="pln">CPU </span><span class="pun">%</span><span class="pln">MEM     TIME</span><span class="pun">+</span><span class="pln"> COMMAND
+    </span><span class="lit">1</span><span class="pln"> root      </span><span class="lit">20</span><span class="pln">   </span><span class="lit">0</span><span class="pln">   </span><span class="lit">19744</span><span class="pln">   </span><span class="lit">2336</span><span class="pln">   </span><span class="lit">2080</span><span class="pln"> R  </span><span class="lit">0.0</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00.04</span><span class="pln"> top</span></code></pre>
+<p>To examine the result further, you can use <code>docker exec</code>:</p>
+<pre class="prettyprint well"><code><span class="pln">$ docker </span><span class="kwd">exec</span><span class="pln"> </span><span class="pun">-</span><span class="pln">it test ps aux
+USER       PID </span><span class="pun">%</span><span class="pln">CPU </span><span class="pun">%</span><span class="pln">MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         </span><span class="lit">1</span><span class="pln">  </span><span class="lit">2.6</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln">  </span><span class="lit">19752</span><span class="pln">  </span><span class="lit">2352</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        </span><span class="typ">Ss</span><span class="pun">+</span><span class="pln">  </span><span class="lit">08</span><span class="pun">:</span><span class="lit">24</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> top </span><span class="pun">-</span><span class="pln">b </span><span class="pun">-</span><span class="pln">H
+root         </span><span class="lit">7</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln">  </span><span class="lit">15572</span><span class="pln">  </span><span class="lit">2164</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        R</span><span class="pun">+</span><span class="pln">   </span><span class="lit">08</span><span class="pun">:</span><span class="lit">25</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> ps aux</span></code></pre>
+<p>And you can gracefully request <code>top</code> to shut down using <code>docker stop test</code>.</p>
+<p>The following <code>Dockerfile</code> shows using the <code>ENTRYPOINT</code> to run Apache in the
+foreground (i.e., as <code>PID 1</code>):</p>
+<pre class="prettyprint well"><code><span class="pln">FROM debian</span><span class="pun">:</span><span class="pln">stable
+RUN apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> update </span><span class="pun">&amp;&amp;</span><span class="pln"> apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> install </span><span class="pun">-</span><span class="pln">y </span><span class="pun">--</span><span class="pln">force</span><span class="pun">-</span><span class="pln">yes apache2
+EXPOSE </span><span class="lit">80</span><span class="pln"> </span><span class="lit">443</span><span class="pln">
+VOLUME </span><span class="pun">[</span><span class="str">"/var/www"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"/var/log/apache2"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"/etc/apache2"</span><span class="pun">]</span><span class="pln">
+ENTRYPOINT </span><span class="pun">[</span><span class="str">"/usr/sbin/apache2ctl"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-D"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"FOREGROUND"</span><span class="pun">]</span></code></pre>
+
+<p>If you need to write a starter script for a single executable, you can ensure that
+the final executable receives the Unix signals by using <code>exec</code> and <code>gosu</code>
+commands:</p>
+<pre class="prettyprint well"><code class="bash"><span class="com">#!/bin/bash</span><span class="pln">
+</span><span class="kwd">set</span><span class="pln"> </span><span class="pun">-</span><span class="pln">e
+
+</span><span class="kwd">if</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="str">"$1"</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="str">'postgres'</span><span class="pln"> </span><span class="pun">];</span><span class="pln"> </span><span class="kwd">then</span><span class="pln">
+    chown </span><span class="pun">-</span><span class="pln">R postgres </span><span class="str">"$PGDATA"</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">-</span><span class="pln">z </span><span class="str">"$(ls -A "</span><span class="pln">$PGDATA</span><span class="str">")"</span><span class="pln"> </span><span class="pun">];</span><span class="pln"> </span><span class="kwd">then</span><span class="pln">
+        gosu postgres initdb
+    </span><span class="kwd">fi</span><span class="pln">
+
+    </span><span class="kwd">exec</span><span class="pln"> gosu postgres </span><span class="str">"$@"</span><span class="pln">
+</span><span class="kwd">fi</span><span class="pln">
+
+</span><span class="kwd">exec</span><span class="pln"> </span><span class="str">"$@"</span></code></pre>
+
+<p>Lastly, if you need to do some extra cleanup (or communicate with other containers)
+on shutdown, or are co-ordinating more than one executable, you may need to ensure
+that the <code>ENTRYPOINT</code> script receives the Unix signals, passes them on, and then
+does some more work:</p>
+<pre class="prettyprint well"><code><span class="com">#!/bin/sh</span><span class="pln">
+</span><span class="com"># Note: I've written this using sh so it works in the busybox container too</span><span class="pln">
+
+</span><span class="com"># USE the trap if you need to also do manual cleanup after the service is stopped,</span><span class="pln">
+</span><span class="com">#     or need to start multiple services in the one container</span><span class="pln">
+trap </span><span class="str">"echo TRAPed signal"</span><span class="pln"> HUP INT QUIT KILL TERM
+
+</span><span class="com"># start service in background here</span><span class="pln">
+</span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apachectl start
+
+echo </span><span class="str">"[hit enter key to exit] or run 'docker stop &lt;container&gt;'"</span><span class="pln">
+read
+
+</span><span class="com"># stop service and clean up here</span><span class="pln">
+echo </span><span class="str">"stopping apache"</span><span class="pln">
+</span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apachectl stop
+
+echo </span><span class="str">"exited $0"</span></code></pre>
+
+<p>If you run this image with <code>docker run -it --rm -p 80:80 --name test apache</code>,
+you can then examine the container's processes with <code>docker exec</code>, or <code>docker top</code>,
+and then ask the script to stop Apache:</p>
+<pre class="prettyprint well"><code class="bash"><span class="pln">$ docker </span><span class="kwd">exec</span><span class="pln"> </span><span class="pun">-</span><span class="pln">it test ps aux
+USER       PID </span><span class="pun">%</span><span class="pln">CPU </span><span class="pun">%</span><span class="pln">MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         </span><span class="lit">1</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln">   </span><span class="lit">4448</span><span class="pln">   </span><span class="lit">692</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        </span><span class="typ">Ss</span><span class="pun">+</span><span class="pln">  </span><span class="lit">00</span><span class="pun">:</span><span class="lit">42</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> </span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">sh </span><span class="pun">/</span><span class="pln">run</span><span class="pun">.</span><span class="pln">sh </span><span class="lit">123</span><span class="pln"> cmd cmd2
+root        </span><span class="lit">19</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln">  </span><span class="lit">0.2</span><span class="pln">  </span><span class="lit">71304</span><span class="pln">  </span><span class="lit">4440</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        </span><span class="typ">Ss</span><span class="pln">   </span><span class="lit">00</span><span class="pun">:</span><span class="lit">42</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+www</span><span class="pun">-</span><span class="pln">data    </span><span class="lit">20</span><span class="pln">  </span><span class="lit">0.2</span><span class="pln">  </span><span class="lit">0.2</span><span class="pln"> </span><span class="lit">360468</span><span class="pln">  </span><span class="lit">6004</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        </span><span class="typ">Sl</span><span class="pln">   </span><span class="lit">00</span><span class="pun">:</span><span class="lit">42</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+www</span><span class="pun">-</span><span class="pln">data    </span><span class="lit">21</span><span class="pln">  </span><span class="lit">0.2</span><span class="pln">  </span><span class="lit">0.2</span><span class="pln"> </span><span class="lit">360468</span><span class="pln">  </span><span class="lit">6000</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        </span><span class="typ">Sl</span><span class="pln">   </span><span class="lit">00</span><span class="pun">:</span><span class="lit">42</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+root        </span><span class="lit">81</span><span class="pln">  </span><span class="lit">0.0</span><span class="pln">  </span><span class="lit">0.1</span><span class="pln">  </span><span class="lit">15572</span><span class="pln">  </span><span class="lit">2140</span><span class="pln"> </span><span class="pun">?</span><span class="pln">        R</span><span class="pun">+</span><span class="pln">   </span><span class="lit">00</span><span class="pun">:</span><span class="lit">44</span><span class="pln">   </span><span class="lit">0</span><span class="pun">:</span><span class="lit">00</span><span class="pln"> ps aux
+$ docker top test
+PID                 USER                COMMAND
+</span><span class="lit">10035</span><span class="pln">               root                </span><span class="pun">{</span><span class="pln">run</span><span class="pun">.</span><span class="pln">sh</span><span class="pun">}</span><span class="pln"> </span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">sh </span><span class="pun">/</span><span class="pln">run</span><span class="pun">.</span><span class="pln">sh </span><span class="lit">123</span><span class="pln"> cmd cmd2
+</span><span class="lit">10054</span><span class="pln">               root                </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+</span><span class="lit">10055</span><span class="pln">               </span><span class="lit">33</span><span class="pln">                  </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+</span><span class="lit">10056</span><span class="pln">               </span><span class="lit">33</span><span class="pln">                  </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">sbin</span><span class="pun">/</span><span class="pln">apache2 </span><span class="pun">-</span><span class="pln">k start
+$ </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">time docker stop test
+test
+real    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.27s</span><span class="pln">
+user    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.03s</span><span class="pln">
+sys </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.03s</span></code></pre>
+
+<blockquote>
+<p><strong>Note:</strong> you can over ride the <code>ENTRYPOINT</code> setting using <code>--entrypoint</code>,
+but this can only set the binary to <em>exec</em> (no <code>sh -c</code> will be used).</p>
+<p><strong>Note</strong>:
+The <em>exec</em> form is parsed as a JSON array, which means that
+you must use double-quotes (") around words not single-quotes (').</p>
+<p><strong>Note</strong>:
+Unlike the <em>shell</em> form, the <em>exec</em> form does not invoke a command shell.
+This means that normal shell processing does not happen. For example,
+<code>ENTRYPOINT [ "echo", "$HOME" ]</code> will not do variable substitution on <code>$HOME</code>.
+If you want shell processing then either use the <em>shell</em> form or execute 
+a shell directly, for example: <code>ENTRYPOINT [ "sh", "-c", "echo", "$HOME" ]</code>.
+Variables that are defined in the <code>Dockerfile</code>using <code>ENV</code>, will be substituted by
+the <code>Dockerfile</code> parser.</p>
+</blockquote>
+<h3 id="shell-form-entrypoint-example">Shell form ENTRYPOINT example</h3>
+<p>You can specify a plain string for the <code>ENTRYPOINT</code> and it will execute in <code>/bin/sh -c</code>.
+This form will use shell processing to substitute shell environment variables,
+and will ignore any <code>CMD</code> or <code>docker run</code> command line arguments.
+To ensure that <code>docker stop</code> will signal any long running <code>ENTRYPOINT</code> executable
+correctly, you need to remember to start it with <code>exec</code>:</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+ENTRYPOINT </span><span class="kwd">exec</span><span class="pln"> top </span><span class="pun">-</span><span class="pln">b</span></code></pre>
+<p>When you run this image, you'll see the single <code>PID 1</code> process:</p>
+<pre class="prettyprint well"><code><span class="pln">$ docker run </span><span class="pun">-</span><span class="pln">it </span><span class="pun">--</span><span class="pln">rm </span><span class="pun">--</span><span class="pln">name test top
+</span><span class="typ">Mem</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1704520K</span><span class="pln"> used</span><span class="pun">,</span><span class="pln"> </span><span class="lit">352148K</span><span class="pln"> free</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0K</span><span class="pln"> shrd</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0K</span><span class="pln"> buff</span><span class="pun">,</span><span class="pln"> </span><span class="lit">140368121167873K</span><span class="pln"> cached
+CPU</span><span class="pun">:</span><span class="pln">   </span><span class="lit">5</span><span class="pun">%</span><span class="pln"> usr   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> sys   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> nic  </span><span class="lit">94</span><span class="pun">%</span><span class="pln"> idle   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> io   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> irq   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> sirq
+</span><span class="typ">Load</span><span class="pln"> average</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0.08</span><span class="pln"> </span><span class="lit">0.03</span><span class="pln"> </span><span class="lit">0.05</span><span class="pln"> </span><span class="lit">2</span><span class="pun">/</span><span class="lit">98</span><span class="pln"> </span><span class="lit">6</span><span class="pln">
+  PID  PPID USER     STAT   VSZ </span><span class="pun">%</span><span class="pln">VSZ </span><span class="pun">%</span><span class="pln">CPU COMMAND
+    </span><span class="lit">1</span><span class="pln">     </span><span class="lit">0</span><span class="pln"> root     R     </span><span class="lit">3164</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> top </span><span class="pun">-</span><span class="pln">b</span></code></pre>
+<p>Which will exit cleanly on <code>docker stop</code>:</p>
+<pre class="prettyprint well"><code><span class="pln">$ </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">time docker stop test
+test
+real    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.20s</span><span class="pln">
+user    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.02s</span><span class="pln">
+sys </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.04s</span></code></pre>
+<p>If you forget to add <code>exec</code> to the beginning of your <code>ENTRYPOINT</code>:</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+ENTRYPOINT top </span><span class="pun">-</span><span class="pln">b
+CMD </span><span class="pun">--</span><span class="pln">ignored</span><span class="pun">-</span><span class="pln">param1</span></code></pre>
+<p>You can then run it (giving it a name for the next step):</p>
+<pre class="prettyprint well"><code><span class="pln">$ docker run </span><span class="pun">-</span><span class="pln">it </span><span class="pun">--</span><span class="pln">name test top </span><span class="pun">--</span><span class="pln">ignored</span><span class="pun">-</span><span class="pln">param2
+</span><span class="typ">Mem</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1704184K</span><span class="pln"> used</span><span class="pun">,</span><span class="pln"> </span><span class="lit">352484K</span><span class="pln"> free</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0K</span><span class="pln"> shrd</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0K</span><span class="pln"> buff</span><span class="pun">,</span><span class="pln"> </span><span class="lit">140621524238337K</span><span class="pln"> cached
+CPU</span><span class="pun">:</span><span class="pln">   </span><span class="lit">9</span><span class="pun">%</span><span class="pln"> usr   </span><span class="lit">2</span><span class="pun">%</span><span class="pln"> sys   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> nic  </span><span class="lit">88</span><span class="pun">%</span><span class="pln"> idle   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> io   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> irq   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> sirq
+</span><span class="typ">Load</span><span class="pln"> average</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0.01</span><span class="pln"> </span><span class="lit">0.02</span><span class="pln"> </span><span class="lit">0.05</span><span class="pln"> </span><span class="lit">2</span><span class="pun">/</span><span class="lit">101</span><span class="pln"> </span><span class="lit">7</span><span class="pln">
+  PID  PPID USER     STAT   VSZ </span><span class="pun">%</span><span class="pln">VSZ </span><span class="pun">%</span><span class="pln">CPU COMMAND
+    </span><span class="lit">1</span><span class="pln">     </span><span class="lit">0</span><span class="pln"> root     S     </span><span class="lit">3168</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> </span><span class="str">/bin/</span><span class="pln">sh </span><span class="pun">-</span><span class="pln">c top </span><span class="pun">-</span><span class="pln">b cmd cmd2
+    </span><span class="lit">7</span><span class="pln">     </span><span class="lit">1</span><span class="pln"> root     R     </span><span class="lit">3164</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln">   </span><span class="lit">0</span><span class="pun">%</span><span class="pln"> top </span><span class="pun">-</span><span class="pln">b</span></code></pre>
+<p>You can see from the output of <code>top</code> that the specified <code>ENTRYPOINT</code> is not <code>PID 1</code>.</p>
+<p>If you then run <code>docker stop test</code>, the container will not exit cleanly - the
+<code>stop</code> command will be forced to send a <code>SIGKILL</code> after the timeout:</p>
+<pre class="prettyprint well"><code><span class="pln">$ docker </span><span class="kwd">exec</span><span class="pln"> </span><span class="pun">-</span><span class="pln">it test ps aux
+PID   USER     COMMAND
+    </span><span class="lit">1</span><span class="pln"> root     </span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">sh </span><span class="pun">-</span><span class="pln">c top </span><span class="pun">-</span><span class="pln">b cmd cmd2
+    </span><span class="lit">7</span><span class="pln"> root     top </span><span class="pun">-</span><span class="pln">b
+    </span><span class="lit">8</span><span class="pln"> root     ps aux
+$ </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">time docker stop test
+test
+real    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">10.19s</span><span class="pln">
+user    </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.04s</span><span class="pln">
+sys </span><span class="lit">0m</span><span class="pln"> </span><span class="lit">0.03s</span></code></pre>
+<h2 id="volume">VOLUME</h2>
+<pre class="prettyprint well"><code><span class="pln">VOLUME </span><span class="pun">[</span><span class="str">"/data"</span><span class="pun">]</span></code></pre>
+<p>The <code>VOLUME</code> instruction creates a mount point with the specified name
+and marks it as holding externally mounted volumes from native host or other
+containers. The value can be a JSON array, <code>VOLUME ["/var/log/"]</code>, or a plain
+string with multiple arguments, such as <code>VOLUME /var/log</code> or <code>VOLUME /var/log
+/var/db</code>.  For more information/examples and mounting instructions via the
+Docker client, refer to 
+<a href="https://docs.docker.com/userguide/dockervolumes/#volume"><em>Share Directories via Volumes</em></a>
+documentation.</p>
+<p>The <code>docker run</code> command initializes the newly created volume with any data 
+that exists at the specified location within the base image. For example, 
+consider the following Dockerfile snippet:</p>
+<pre class="prettyprint well"><code><span class="pln">FROM ubuntu
+RUN mkdir </span><span class="pun">/</span><span class="pln">myvol
+RUN echo </span><span class="str">"hello world"</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln"> </span><span class="str">/myvol/</span><span class="pln">greating
+VOLUME </span><span class="pun">/</span><span class="pln">myvol</span></code></pre>
+<p>This Dockerfile results in an image that causes <code>docker run</code>, to
+create a new mount point at <code>/myvol</code> and copy the  <code>greating</code> file 
+into the newly created volume.</p>
+<blockquote>
+<p><strong>Note</strong>:
+The list is parsed as a JSON array, which means that
+you must use double-quotes (") around words not single-quotes (').</p>
+</blockquote>
+<h2 id="user">USER</h2>
+<pre class="prettyprint well"><code><span class="pln">USER daemon</span></code></pre>
+<p>The <code>USER</code> instruction sets the user name or UID to use when running the image
+and for any <code>RUN</code>, <code>CMD</code> and <code>ENTRYPOINT</code> instructions that follow it in the
+<code>Dockerfile</code>.</p>
+<h2 id="workdir">WORKDIR</h2>
+<pre class="prettyprint well"><code><span class="pln">WORKDIR </span><span class="pun">/</span><span class="pln">path</span><span class="pun">/</span><span class="pln">to</span><span class="pun">/</span><span class="pln">workdir</span></code></pre>
+<p>The <code>WORKDIR</code> instruction sets the working directory for any <code>RUN</code>, <code>CMD</code>,
+<code>ENTRYPOINT</code>, <code>COPY</code> and <code>ADD</code> instructions that follow it in the <code>Dockerfile</code>.</p>
+<p>It can be used multiple times in the one <code>Dockerfile</code>. If a relative path
+is provided, it will be relative to the path of the previous <code>WORKDIR</code>
+instruction. For example:</p>
+<pre class="prettyprint well"><code><span class="pln">WORKDIR </span><span class="pun">/</span><span class="pln">a
+WORKDIR b
+WORKDIR c
+RUN pwd</span></code></pre>
+<p>The output of the final <code>pwd</code> command in this <code>Dockerfile</code> would be
+<code>/a/b/c</code>.</p>
+<p>The <code>WORKDIR</code> instruction can resolve environment variables previously set using
+<code>ENV</code>. You can only use environment variables explicitly set in the <code>Dockerfile</code>.
+For example:</p>
+<pre class="prettyprint well"><code><span class="pln">ENV DIRPATH </span><span class="pun">/</span><span class="pln">path
+WORKDIR $DIRPATH</span><span class="pun">/</span><span class="pln">$DIRNAME</span></code></pre>
+<p>The output of the final <code>pwd</code> command in this <code>Dockerfile</code> would be
+<code>/path/$DIRNAME</code></p>
+<h2 id="onbuild">ONBUILD</h2>
+<pre class="prettyprint well"><code><span class="pln">ONBUILD </span><span class="pun">[</span><span class="pln">INSTRUCTION</span><span class="pun">]</span></code></pre>
+<p>The <code>ONBUILD</code> instruction adds to the image a <em>trigger</em> instruction to
+be executed at a later time, when the image is used as the base for
+another build. The trigger will be executed in the context of the
+downstream build, as if it had been inserted immediately after the
+<code>FROM</code> instruction in the downstream <code>Dockerfile</code>.</p>
+<p>Any build instruction can be registered as a trigger.</p>
+<p>This is useful if you are building an image which will be used as a base
+to build other images, for example an application build environment or a
+daemon which may be customized with user-specific configuration.</p>
+<p>For example, if your image is a reusable Python application builder, it
+will require application source code to be added in a particular
+directory, and it might require a build script to be called <em>after</em>
+that. You can't just call <code>ADD</code> and <code>RUN</code> now, because you don't yet
+have access to the application source code, and it will be different for
+each application build. You could simply provide application developers
+with a boilerplate <code>Dockerfile</code> to copy-paste into their application, but
+that is inefficient, error-prone and difficult to update because it
+mixes with application-specific code.</p>
+<p>The solution is to use <code>ONBUILD</code> to register advance instructions to
+run later, during the next build stage.</p>
+<p>Here's how it works:</p>
+<ol>
+<li>When it encounters an <code>ONBUILD</code> instruction, the builder adds a
+   trigger to the metadata of the image being built. The instruction
+   does not otherwise affect the current build.</li>
+<li>At the end of the build, a list of all triggers is stored in the
+   image manifest, under the key <code>OnBuild</code>. They can be inspected with
+   the <code>docker inspect</code> command.</li>
+<li>Later the image may be used as a base for a new build, using the
+   <code>FROM</code> instruction. As part of processing the <code>FROM</code> instruction,
+   the downstream builder looks for <code>ONBUILD</code> triggers, and executes
+   them in the same order they were registered. If any of the triggers
+   fail, the <code>FROM</code> instruction is aborted which in turn causes the
+   build to fail. If all triggers succeed, the <code>FROM</code> instruction
+   completes and the build continues as usual.</li>
+<li>Triggers are cleared from the final image after being executed. In
+   other words they are not inherited by "grand-children" builds.</li>
+</ol>
+<p>For example you might add something like this:</p>
+<pre class="prettyprint well"><code><span class="pun">[...]</span><span class="pln">
+ONBUILD ADD </span><span class="pun">.</span><span class="pln"> </span><span class="pun">/</span><span class="pln">app</span><span class="pun">/</span><span class="pln">src
+ONBUILD RUN </span><span class="pun">/</span><span class="pln">usr</span><span class="pun">/</span><span class="kwd">local</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">python</span><span class="pun">-</span><span class="pln">build </span><span class="pun">--</span><span class="pln">dir </span><span class="pun">/</span><span class="pln">app</span><span class="pun">/</span><span class="pln">src
+</span><span class="pun">[...]</span></code></pre>
+<blockquote>
+<p><strong>Warning</strong>: Chaining <code>ONBUILD</code> instructions using <code>ONBUILD ONBUILD</code> isn't allowed.</p>
+<p><strong>Warning</strong>: The <code>ONBUILD</code> instruction may not trigger <code>FROM</code> or <code>MAINTAINER</code> instructions.</p>
+</blockquote>
+<h2 id="dockerfile-examples">Dockerfile Examples</h2>
+<pre class="prettyprint well"><code><span class="com"># Nginx</span><span class="pln">
+</span><span class="com">#</span><span class="pln">
+</span><span class="com"># VERSION               0.0.1</span><span class="pln">
+
+FROM      ubuntu
+MAINTAINER </span><span class="typ">Victor</span><span class="pln"> </span><span class="typ">Vieux</span><span class="pln"> </span><span class="pun">&lt;</span><span class="pln">victor@docker</span><span class="pun">.</span><span class="pln">com</span><span class="pun">&gt;</span><span class="pln">
+
+RUN apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> update </span><span class="pun">&amp;&amp;</span><span class="pln"> apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> install </span><span class="pun">-</span><span class="pln">y inotify</span><span class="pun">-</span><span class="pln">tools nginx apache2 openssh</span><span class="pun">-</span><span class="pln">server
+
+</span><span class="com"># Firefox over VNC</span><span class="pln">
+</span><span class="com">#</span><span class="pln">
+</span><span class="com"># VERSION               0.3</span><span class="pln">
+
+FROM ubuntu
+
+</span><span class="com"># Install vnc, xvfb in order to create a 'fake' display and firefox</span><span class="pln">
+RUN apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> update </span><span class="pun">&amp;&amp;</span><span class="pln"> apt</span><span class="pun">-</span><span class="kwd">get</span><span class="pln"> install </span><span class="pun">-</span><span class="pln">y x11vnc xvfb firefox
+RUN mkdir </span><span class="pun">~</span><span class="str">/.vnc
+# Setup a password
+RUN x11vnc -storepasswd 1234 ~/</span><span class="pun">.</span><span class="pln">vnc</span><span class="pun">/</span><span class="pln">passwd
+</span><span class="com"># Autostart firefox (might not be the best way, but it does the trick)</span><span class="pln">
+RUN bash </span><span class="pun">-</span><span class="pln">c </span><span class="str">'echo "firefox" &gt;&gt; /.bashrc'</span><span class="pln">
+
+EXPOSE </span><span class="lit">5900</span><span class="pln">
+CMD    </span><span class="pun">[</span><span class="str">"x11vnc"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-forever"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-usepw"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-create"</span><span class="pun">]</span><span class="pln">
+
+</span><span class="com"># Multiple images example</span><span class="pln">
+</span><span class="com">#</span><span class="pln">
+</span><span class="com"># VERSION               0.1</span><span class="pln">
+
+FROM ubuntu
+RUN echo foo </span><span class="pun">&gt;</span><span class="pln"> bar
+</span><span class="com"># Will output something like ===&gt; 907ad6c2736f</span><span class="pln">
+
+FROM ubuntu
+RUN echo moo </span><span class="pun">&gt;</span><span class="pln"> oink
+</span><span class="com"># Will output something like ===&gt; 695d7793cbe4</span><span class="pln">
+
+</span><span class="com"># You᾿ll now have two images, 907ad6c2736f with /bar, and 695d7793cbe4 with</span><span class="pln">
+</span><span class="com"># /oink.</span></code></pre>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="push-footer"></div>
+
+</div>
+
+
+
+<div id="footer-container" class="container">
+  <div id="footer" class="grey-body">
+    <div class="row">
+      <div class="span2">
+        <span class="footer-title">Community</span>
+        <ul class="unstyled">
+          <li><a class="primary-button" href="https://www.docker.com/community/events/">Events</a></li>
+          <li><a class="primary-button" href="http://posts.docker.com/">Friends' Posts</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/community/meetups/">Meetups</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/community/governance/">Governance</a></li>
+          <li><a class="primary-button" href="http://forums.docker.com/">Forums</a></li>
+          <li><a class="primary-button" href="http://botbot.me/freenode/docker">IRC</a></li>
+          <li><a class="primary-button" href="https://github.com/docker/docker">GitHub</a></li>
+          <li><a class="primary-button" href="http://stackoverflow.com/search?q=docker">Stackoverflow</a></li>
+          <li><a class="primary-button" href="http://www.cafepress.com/docker">Swag</a></li>
+        </ul>
+      </div>
+      <div class="span2">
+        <span class="footer-title">Enterprise</span>
+        <ul class="unstyled">
+          <li><a class="primary-button" href="https://www.docker.com/enterprise/support/">Support</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/enterprise/education/">Education</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/enterprise/services/">Services</a></li>
+        </ul>
+        <span class="footer-title">Partner Solutions</span>
+        <ul class="unstyled">
+          <li><a class="primary-button" href="https://www.docker.com/partners/find/">Find a Partner</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/partners/program/">Partner Program</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/partners/learn/">Learn More</a></li>
+        </ul>
+      </div>
+      <div class="span2">
+        <span class="footer-title">Resources</span>
+        <ul class="unstyled">
+          <li><a class="primary-button" href="https://docs.docker.com/">Documentation</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/resources/help/">Help</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/resources/usecases/">Use Cases</a></li>
+          <li><a class="primary-button" href="http://www.docker.com/tryit/">Online Tutorial</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/resources/howtobuy/">How To Buy</a></li>
+          <li><a class="primary-button" href="http://status.docker.com/">Status</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/resources/security/">Security</a></li>
+        </ul>
+      </div>
+      <div class="span2">
+        <span class="footer-title">Company</span>
+        <ul class="unstyled">
+          <li><a class="primary-button" href="https://www.docker.com/company/aboutus/">About Us</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/company/team/">Team</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/company/news/">News</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/company/press/">Press</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/company/careers/">Careers</a></li>
+          <li><a class="primary-button" href="https://www.docker.com/company/contact/">Contact</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <span class="footer-title">Connect</span>
+        <div class="search">
+          <span>Subscribe to our newsletter</span>
+          <form action="https://www.docker.com/subscribe_newsletter/" method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="aWL78QXQkY8DSKNYh6cl08p5eTLl7sOa">
+            <label for="id_email">Email:</label><input class="form-control" id="id_email" name="email" placeholder="Enter your email" type="text">
+            
+            <button type="submit"><i class="icon-arrow-right"></i> </button>
+          </form>
+        </div>
+        <ul class="unstyled social">
+          <li><a title="Docker on Twitter" class="primary-button blog" href="http://blog.docker.com/">Blog</a></li>
+          <li><a title="Docker on Twitter" class="primary-button twitter" href="http://twitter.com/docker">Twitter</a></li>
+          <li><a title="Docker on Google+" class="primary-button googleplus" href="https://plus.google.com/u/0/communities/108146856671494713993">Google+</a></li>
+          <li><a title="Docker on Facebook" class="primary-button facebook" href="https://www.facebook.com/docker.run">Facebook</a></li>
+          <li><a title="Docker on Youtube" class="primary-button youtube" href="http://www.youtube.com/user/dockerrun">YouTube</a></li>
+        </ul>
+        <ul class="unstyled social">
+          <li><a title="Docker on SlideShare" class="primary-button slideshare" href="http://www.slideshare.net/Docker">Slideshare</a></li>
+          <li>
+             <a title="Docker on LinkedIn" class="primary-button" href="https://www.linkedin.com/company/docker">
+                 <span class="linkedin"></span>
+                 LinkedIn
+             </a>
+          </li>
+          <li>
+              <a title="Docker on GitHub" class="primary-button" href="https://github.com/docker/">
+                  <span class="github"></span>
+                  GitHub
+              </a>
+          </li>
+          <li>
+              <a title="Docker on Reddit" class="primary-button" href="http://www.reddit.com/r/docker">
+                  <span class="reddit"></span>
+                  Reddit
+              </a>
+          </li>
+          <li>
+              <a title="Docker on AngelList" class="primary-button" href="https://angel.co/docker-inc-1">
+                  <span class="angellist"></span>
+                  AngelList
+              </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="span6 pagination-right copyright">
+        <span>© 2014-2015 Docker, Inc.</span>
+      </div>
+      <div class="span6 pagination-left copyright">
+        <a href="http://www.docker.com/legal/terms_of_service">Terms</a> ·
+        <a href="http://www.docker.com/legal/privacy_policy">Privacy</a> ·
+        <a href="http://www.docker.com/legal/trademark_guidelines">Trademarks</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./Dockerfile - Docker Documentation_files/jquery-1.10.2.min.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/jquery.cookie.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/jquery-scrolltofixed-min.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/bootstrap-3.0.3.min.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/prettify-1.0.min.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/dockerfile_tutorial.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/dockerfile_tutorial_level.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/base.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/tipuesearch_set.js"></script>
+<script src="./Dockerfile - Docker Documentation_files/tipuesearch.min.js"></script>
+<script type="text/javascript">
+piAId = '45082';
+piCId = '1482';
+
+(function() {
+  function async_load(){
+    var s = document.createElement('script'); s.type = 'text/javascript';
+    s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
+    var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
+  }
+  if(window.attachEvent) { window.attachEvent('onload', async_load); }
+  else { window.addEventListener('load', async_load, false); }
+})();
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#content').css("min-height", $(window).height() - 553 );
+    // if the URL contains a version string, update the version picker to reflect that
+    version = document.location.pathname.match(/^\/(v\d\.\d)\/.*/)
+    if (version && version[1]) {
+        $('#document-version-number')[0].text = 'Version '+version[1];
+    } else {
+        $('#document-version-number')[0].text = $('#document-version-number')[0].text + " (Latest)"
+    }
+    // load the complete versions list
+    $.get("/versions.html_fragment", function( data ) {
+    	$('#documentation-version-list').prepend(data);
+	//remove any "/v1.1/" bits from front, so we can add the path to the version selection dropdown.
+	path = document.location.pathname.replace(/^\/v\d\.\d/, "");
+	$('#documentation-version-list a.version').each(function(i, e) {
+		e.href = e.href+path;
+		$(e).removeClass()
+	});
+    });
+
+  })
+  var userName = getCookie('docker_sso_username');
+  if (userName) {
+    $('.topmostnav_loggedout').hide();
+    $('.topmostnav_loggedin').show();
+    $('#logged-in-header-username').text(userName);
+  } else {
+    $('.topmostnav_loggedout').show();
+    $('.topmostnav_loggedin').hide();
+  }
+</script>
+
+</body></html>
