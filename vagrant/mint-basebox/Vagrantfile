@@ -1,6 +1,8 @@
 VAGRANTFILE_API_VERSION ||= "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  	config.ssh.insert_key = false
+  	
 	config.vm.box = "Mint"
 	config.vm.box_download_insecure = true
 	config.vm.network "public_network"
@@ -14,6 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 
 	config.vm.provision :shell, path: "docker.sh"
+	config.vm.provision :shell, path: "bring-all-the-containers.sh"
 	
 	config.vm.provision "file", source: "clean_base_box.sh", destination: "/tmp/clean_base_box.sh"
 	config.vm.provision :shell, inline: "chmod +x /tmp/clean_base_box.sh && sudo /tmp/clean_base_box.sh"

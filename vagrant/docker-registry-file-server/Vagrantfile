@@ -18,5 +18,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "file", source: "nginx.conf", destination: "/home/vagrant/conf/default.conf"
 
 	config.vm.provision :shell, path: "prepare.sh"
-	config.vm.provision :shell, path: "prepare-containers-for-hack.sh", run: "always"
+#	config.vm.provision :shell, path: "prepare-containers-for-hack.sh", run: "always"
 end

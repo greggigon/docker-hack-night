@@ -1,0 +1,42 @@
+#!/bin/bash
+OPENSHIFT_VERSION="v0.4.1"
+
+IP=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
+
+echo "Pull the base containers that people would be using ..."
+ 
+if ! grep -q 0.0.0.0 "/etc/default/docker" ; then
+   	sudo service docker stop
+	sudo sh -c "echo 'DOCKER_OPTS=\"--insecure-registry 0.0.0.0/0\"' > /etc/default/docker"
+	sudo service docker start
+	sleep 5
+else
+	echo "Docker settings already modified ... MOVING ON!"
+fi
+
+echo "-> Getting Busybox base container ..."
+docker pull busybox:latest
+
+
+echo "-> Getting Ubuntu base container ..."
+docker pull ubuntu:14.10
+rm -rf ~/tmp/ubuntu-image
+mkdir -p ~/tmp/ubuntu-image
+cp /vagrant/ubuntu-image/Dockerfile ~/tmp/ubuntu-image
+cd ~/tmp/ubuntu-image
+docker build -t hack/ubuntu:14.10 .
+
+
+echo "-> Getting Wordpress base container ..."
+docker pull wordpress:latest
+
+
+echo "-> Getting MySQL container ..."
+docker pull mysql:latest
+
+echo "-> Getting OpenShift stuff ..."
+docker pull openshift/origin-pod:latest
+docker pull openshift/hello-openshift:latest
+docker pull openshift/origin:${OPENSHIFT_VERSION}
+
+echo "-> DONE!"

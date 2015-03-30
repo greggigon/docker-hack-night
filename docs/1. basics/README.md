@@ -31,24 +31,35 @@ To search for containers in the Docker registry use:
 
 	$ docker search <name-of-container>
 
+However, we are probably not going to use anything out of the Publis Registry at the moment and Internet connectivity is a must.
+
 --------
 
-To get a container from Docker registry use:
-
-	$ docker pull container-name
-
-
-If you are about to use unofficial and non-public Docker repository, you'll need to specify the container name in the form of:
-
-	$ docker pull hostname:port/repository/container:version
-
-
-To see what Images are downloaded use:
+To list the images use:
 
 	$ docker images
 
+You should see something like this bellow:
 
-To remove images:
+	vagrant@master ~ $ docker images
+	REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+	openshift/hello-openshift   latest              888ef8844e41        38 hours ago        5.62 MB
+	openshift/origin-pod        latest              6729bd19d4b7        38 hours ago        957.9 kB
+	wordpress                   latest              b66a24c3ebca        8 days ago          451.4 MB
+	ubuntu                      14.10               59a878f244f6        9 days ago          194.4 MB
+	ubuntu                      utopic              59a878f244f6        9 days ago          194.4 MB
+	ubuntu                      utopic-20150319     59a878f244f6        9 days ago          194.4 MB
+	mysql                       latest              e93afb6a83e9        9 days ago          282.8 MB
+	openshift/origin            v0.4.1              72d0794e4db3        2 weeks ago         496.3 MB
+	google/cadvisor             0.10.1              6a46ed29e869        4 weeks ago         18.03 MB
+	google/cadvisor             latest              6a46ed29e869        4 weeks ago         18.03 MB
+	busybox                     latest              4986bf8c1536        12 weeks ago        2.433 MB
+
+
+--------
+
+
+To remove images (but don't do it, we'll need them in the Hacks):
 	
 
 	$ docker rmi <image-name>
@@ -141,4 +152,3 @@ Hello YOURNAME!
 You've created your first container!   Run `docker images` and you should see it.  We'll see later a better way to build containers.  For now, it's worth noting that on disk our container is only another (very small) layer on top of the existing Ubuntu image which makes Docker very space efficient.
 
 This should conclude basic usage and we can navigate to [2. Networking](../2.%20networking/)
-

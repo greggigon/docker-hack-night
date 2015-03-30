@@ -13,41 +13,36 @@ Dockerfile is a recipe for building a Docker container. We are going to create a
 Let's start with the basics. 
 
  1. Create empty folder and empty **Dockerfile** somewhere
- 2. Add the **simple_http_server.py** to that folder.
- 3. Add the **run-simple-http-server** file to that folder.
-
+ 2. Add the **index.html** to that folder (put some interesting text in the index.html file).
 
 ----------
 Content of the Dockerfile should look like this:
 
-    FROM ubuntu:14:10
+    FROM ubuntu:14.10
     MAINTAINER "Greg Gigon <greg.gigon@somemail.com>"
 	
-	ADD simple_http_server.py /tmp
-	ADD run-simple-http-serve /tmp
-	RUN mkdir -p /opt/simple-http-server && mv /tmp/run-simple-http-server && \
-		 chmod +x /bin/run-simple-http-server && \
-		 mv /tmp/simple_http_server.py /opt/simple-http-server
-	ENTRYPOINT /bin/simple-http-server
+	ADD index.html /
+	RUN chmod 644 /index.html 
+	ENTRYPOINT python3 -m http.server
 	EXPOSE 8000
 
 
 ----------
 We can now build the container from the command line with command:
 
-	docker build -t simple-http-container .
+	docker build -t yourname/simple-http-server .
 
 
 ### Sharing the container
 
 You can share container as a file by **exporting/importing** it with command:
 
-	docker export simple-http-container > simple-http-container.tar
+	docker export simple-http-server > simple-http-server.tar
 
-Or you can push it to Docker registry by tagging it first with a registry address and pushing it:
+Or you can push it to Docker registry by tagging it first with a registry address and pushing it (this will only work if network is available):
 
-	docker tag simple-http-container 192.168.0.X:5000/greg/simple-http-container
-	docker push 192.168.0.X:5000/greg/simple-http-container
+	docker tag simple-http-server ${REGISTRY_IP_ADDRESS}:5000/greg/simple-http-server
+	docker push ${REGISTRY_IP_ADDRESS}:5000/greg/simple-http-server
 
 
 ----------
